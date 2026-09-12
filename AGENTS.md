@@ -14,4 +14,4 @@ Single-context: `CONTEXT.md` + `docs/adr/` at repo root. See `docs/agents/domain
 
 ### Coding standards
 
-TypeScript + React project. See `docs/agents/coding-standard.md`.
+TypeScript + React on Vite. Hub splits by branch (naming, layout, types, React, data fetching, testing, tooling, commits) — see `docs/agents/coding-standard.md`.
