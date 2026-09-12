@@ -15,5 +15,6 @@ Reach for the file matching the branch you're on:
 - **React** — component shape, hooks discipline, derived state, accessibility. Reach when writing a component. See `coding-standard/react.md`.
 - **Data fetching** — TanStack Query, API client shape, loading/error/empty states. Reach when a component needs server data. See `coding-standard/data-fetching.md`.
 - **Testing** — Vitest + Testing Library + MSW, coverage bar, banned patterns. Reach when writing or reviewing a test. See `coding-standard/testing.md`.
+- **CSS** — `@layer` order, composition primitives, override mechanism, utilities. Reach when writing or reviewing a stylesheet. See `coding-standard/css.md`.
 
 Commits: Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`), imperative subject, no trailing period, reference the issue when one exists.
