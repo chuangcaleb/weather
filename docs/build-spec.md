@@ -53,7 +53,7 @@ Flat files, no barrels. `@/` alias across directories, relative paths within one
 - One shared, inheritable `--gutter` custom property — no per-primitive namespaced vars.
 - Overrides go through a block class in the `blocks` layer, re-declaring the custom property (`.result-card { --gutter: var(--size-2); }`) — never inline `style`, never a data-attribute variant (none of the five primitives has more than one configuration). See [ADR-0001](adr/0001-css-primitive-override-mechanism.md).
 - Exact primitive CSS: [css.md](agents/coding-standards/css.md).
-- Stylelint enforcement of the layer order: not yet configured — out of this build's scope, tracked in the map's Not yet specified.
+- Stylelint enforcement of the layer order: configured (issue #12) — `stylelint.config.js` + local `weather/layer-order` rule + `defensive-css/require-at-layer`, run via `pnpm lint:css`. Not yet wired into a pre-commit hook (no Lefthook config exists yet).
 
 ## 4. API access path
 
