@@ -1,7 +1,7 @@
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
-import { WeatherApiError, fetchWeather } from './weather';
+import { WeatherApiError, WeatherPayloadError, fetchWeather } from './weather';
 
 const server = setupServer();
 
@@ -45,13 +45,25 @@ describe('fetchWeather', () => {
     ).rejects.toMatchObject(new WeatherApiError(404));
   });
 
-  it('throws on a shape that fails boundary validation instead of returning garbage', async () => {
+  it('throws WeatherPayloadError on a shape that fails boundary validation', async () => {
     server.use(
       http.get('/api/weather', () => HttpResponse.json({ unexpected: true })),
     );
 
     await expect(
       fetchWeather({ city: 'Lisbon', country: 'PT' }),
-    ).rejects.toThrow();
+    ).rejects.toBeInstanceOf(WeatherPayloadError);
+  });
+
+  it('throws WeatherPayloadError when the conditions array is empty', async () => {
+    server.use(
+      http.get('/api/weather', () =>
+        HttpResponse.json({ ...validUpstreamBody, weather: [] }),
+      ),
+    );
+
+    await expect(
+      fetchWeather({ city: 'Lisbon', country: 'PT' }),
+    ).rejects.toBeInstanceOf(WeatherPayloadError);
   });
 });

@@ -1,13 +1,19 @@
 import { z } from 'zod';
 import type { Query, Reading } from '@/features/weather/types';
 
+// The AJAX call: the browser fetches weather data asynchronously from the same-origin
+// proxy, which returns OpenWeather's JSON verbatim — so the schema below is
+// OpenWeather's own response shape, validated here at the boundary.
+
 const weatherResponseSchema = z.object({
-  weather: z.array(
-    z.object({
-      main: z.string(),
-      description: z.string(),
-    }),
-  ),
+  weather: z
+    .array(
+      z.object({
+        main: z.string(),
+        description: z.string(),
+      }),
+    )
+    .min(1),
   main: z.object({
     temp: z.number(),
     humidity: z.number(),
@@ -28,6 +34,17 @@ export class WeatherApiError extends Error {
   }
 }
 
+/**
+ * The proxy answered, but not with a shape this app can read. Distinct from
+ * WeatherApiError because retrying is pointless — the same bytes come back.
+ */
+export class WeatherPayloadError extends Error {
+  constructor(options?: ErrorOptions) {
+    super('Weather API returned an unreadable payload', options);
+    this.name = 'WeatherPayloadError';
+  }
+}
+
 export async function fetchWeather(
   query: Query,
   signal?: AbortSignal,
@@ -39,10 +56,19 @@ export async function fetchWeather(
   const response = await fetch(url, { signal });
   if (!response.ok) throw new WeatherApiError(response.status);
 
-  const body: unknown = await response.json();
-  const data = weatherResponseSchema.parse(body);
+  let body: unknown;
+  try {
+    body = await response.json();
+  } catch (error) {
+    throw new WeatherPayloadError({ cause: error });
+  }
+
+  const parsed = weatherResponseSchema.safeParse(body);
+  if (!parsed.success) throw new WeatherPayloadError({ cause: parsed.error });
+
+  const data = parsed.data;
   const [weather] = data.weather;
-  if (!weather) throw new WeatherApiError(response.status);
+  if (!weather) throw new WeatherPayloadError();
 
   return {
     summary: weather.main,

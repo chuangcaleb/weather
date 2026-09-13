@@ -24,7 +24,7 @@ function mockResponse() {
 }
 
 function mockRequest(query: Record<string, string>): VercelRequest {
-  return { query } as unknown as VercelRequest;
+  return { method: 'GET', query } as unknown as VercelRequest;
 }
 
 describe('api/weather', () => {
@@ -33,6 +33,7 @@ describe('api/weather', () => {
   afterEach(() => {
     process.env.WEATHER_API_KEY = originalKey;
     vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
   it('rejects a request missing the city parameter', async () => {
@@ -42,10 +43,38 @@ describe('api/weather', () => {
     expect(response.statusCode).toBe(400);
   });
 
+  it('rejects a request whose country is not an alpha-2 code', async () => {
+    process.env.WEATHER_API_KEY = 'test-key';
+    const fetchMock = vi.fn<typeof fetch>();
+    vi.stubGlobal('fetch', fetchMock);
+
+    const response = mockResponse();
+    await handler(
+      mockRequest({ city: 'Lisbon', country: 'Portugal' }),
+      response,
+    );
+
+    expect(response.statusCode).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('rejects a non-GET request', async () => {
+    const response = mockResponse();
+    await handler(
+      {
+        method: 'POST',
+        query: { city: 'Lisbon', country: 'PT' },
+      } as unknown as VercelRequest,
+      response,
+    );
+
+    expect(response.statusCode).toBe(405);
+  });
+
   it('reports misconfiguration when no key is set, never as a client error', async () => {
     delete process.env.WEATHER_API_KEY;
     const response = mockResponse();
-    await handler(mockRequest({ city: 'Lisbon' }), response);
+    await handler(mockRequest({ city: 'Lisbon', country: 'PT' }), response);
 
     expect(response.statusCode).toBe(500);
   });
@@ -99,5 +128,54 @@ describe('api/weather', () => {
 
     expect(response.statusCode).toBe(404);
     expect(response.headers['Cache-Control']).toBeUndefined();
+  });
+
+  it('never forwards the upstream error body to the client', async () => {
+    process.env.WEATHER_API_KEY = 'test-key';
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() =>
+        Promise.resolve(
+          new Response(
+            JSON.stringify({ cod: '404', message: 'city not found' }),
+            {
+              status: 404,
+            },
+          ),
+        ),
+      ),
+    );
+
+    const response = mockResponse();
+    await handler(mockRequest({ city: 'Nowhere', country: 'ZZ' }), response);
+
+    expect(response.body).not.toMatchObject({ message: 'city not found' });
+  });
+
+  it('collapses an unmapped upstream status to 502', async () => {
+    process.env.WEATHER_API_KEY = 'test-key';
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.resolve(new Response('{}', { status: 503 }))),
+    );
+
+    const response = mockResponse();
+    await handler(mockRequest({ city: 'Lisbon', country: 'PT' }), response);
+
+    expect(response.statusCode).toBe(502);
+  });
+
+  it('answers 502 when the upstream request itself fails', async () => {
+    process.env.WEATHER_API_KEY = 'test-key';
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.reject(new Error('network down'))),
+    );
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const response = mockResponse();
+    await handler(mockRequest({ city: 'Lisbon', country: 'PT' }), response);
+
+    expect(response.statusCode).toBe(502);
   });
 });
