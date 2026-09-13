@@ -20,7 +20,7 @@
     justify-content: center;
     block-size: var(--control-height);
     padding-inline: var(--size-4);
-    border: 1px solid var(--card-edge);
+    border: var(--border-size-1) solid var(--card-edge);
     border-radius: var(--radius-3);
     background: var(--surface-2);
   }

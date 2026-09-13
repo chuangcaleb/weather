@@ -4,10 +4,11 @@
   .icon-button {
     display: grid;
     place-items: center;
+    /* kept magic numbers for fixed-size a11y */
     inline-size: 2.75rem;
     block-size: 2.75rem;
     flex: 0 0 auto;
-    border: 2px solid var(--accent);
+    border: var(--border-size-2) solid var(--accent);
     border-radius: var(--radius-3);
     background: transparent;
     color: var(--accent);
@@ -36,19 +37,19 @@
   }
 
   .icon {
-    inline-size: 1.25rem;
-    block-size: 1.25rem;
+    inline-size: var(--size-4);
+    block-size: var(--size-4);
   }
 
   .icon-button[data-size='large'] .icon {
-    inline-size: 1.75rem;
-    block-size: 1.75rem;
+    inline-size: var(--size-6);
+    block-size: var(--size-6);
   }
 
   /* The inline, text-only counterpart: retry and other in-card actions. */
   .text-button {
     padding: var(--size-2) var(--size-3);
-    border: 1px solid var(--accent);
+    border: var(--border-size-1) solid var(--accent);
     border-radius: var(--radius-3);
     background: transparent;
     color: var(--accent);

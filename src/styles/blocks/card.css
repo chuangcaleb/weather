@@ -2,7 +2,7 @@
   .card {
     position: relative;
     padding: var(--size-6);
-    border: 1px solid var(--card-edge);
+    border: var(--border-size-1) solid var(--card-edge);
     border-radius: var(--radius-4);
     background: var(--surface-2);
     box-shadow: var(--shadow-3);

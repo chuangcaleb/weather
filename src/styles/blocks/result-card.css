@@ -3,7 +3,7 @@
     --gutter: var(--size-5);
 
     /* Headroom for the icon that overhangs the top edge. */
-    margin-block-start: var(--size-10);
+    margin-block-start: var(--size-11);
     min-block-size: 12rem;
   }
 
@@ -15,10 +15,10 @@
 
   .condition-icon {
     position: absolute;
-    inset-block-start: -4.5rem;
+    inset-block-start: -6.5rem;
     inset-inline-end: var(--size-5);
-    inline-size: 8rem;
-    block-size: 8rem;
+    inline-size: 11rem;
+    block-size: 11rem;
     color: var(--accent);
   }
 

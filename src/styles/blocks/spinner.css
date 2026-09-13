@@ -1,7 +1,7 @@
 @layer blocks {
   .spinner {
-    inline-size: 2.5rem;
-    block-size: 2.5rem;
+    inline-size: var(--size-8);
+    block-size: var(--size-8);
     color: var(--accent);
     animation: spinner-turn 1s linear infinite;
 

@@ -12,14 +12,14 @@
     --gutter: var(--size-2) var(--size-4);
 
     padding: var(--size-3) var(--size-4);
-    border: 1px solid var(--card-edge);
+    border: var(--border-size-1) solid var(--card-edge);
     border-radius: var(--radius-2);
     background: var(--surface-3);
     justify-content: flex-start;
   }
 
   .history-row__label {
-    flex: 1 1 10rem;
+    flex: 1 1 var(--size-12);
     font-size: var(--font-size-2);
   }
 
@@ -32,7 +32,7 @@
   .history-row__aside {
     --gutter: var(--size-3);
 
-    flex: 1 1 10rem;
+    flex: 1 1 var(--size-12);
     flex-wrap: nowrap;
     justify-content: flex-end;
   }
