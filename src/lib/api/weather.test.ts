@@ -1,6 +1,12 @@
-import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
+import {
+  weatherEmptyConditions,
+  weatherMalformedPayload,
+  weatherNotFound,
+  weatherSuccess,
+  weatherUnparsableBody,
+} from '@/mocks/handlers';
 import { WeatherApiError, WeatherPayloadError, fetchWeather } from './weather';
 
 const server = setupServer();
@@ -9,37 +15,24 @@ beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-const validUpstreamBody = {
-  weather: [{ main: 'Clouds' }],
-  main: { temp: 18.5, temp_max: 21.2, temp_min: 15.9, humidity: 72 },
-  name: 'Lisbon',
-  sys: { country: 'PT' },
-};
-
 describe('fetchWeather', () => {
   it('resolves a Reading from a valid proxy response', async () => {
-    server.use(
-      http.get('/api/weather', () => HttpResponse.json(validUpstreamBody)),
-    );
+    server.use(weatherSuccess({ city: 'Lisbon', country: 'PT', tempC: 18.5 }));
 
     const reading = await fetchWeather({ city: 'Lisbon', country: 'PT' });
 
     expect(reading).toEqual({
       summary: 'Clouds',
       temperatureC: 18.5,
-      highC: 21.2,
-      lowC: 15.9,
+      highC: 21.5,
+      lowC: 15.5,
       humidity: 72,
       place: 'Lisbon, PT',
     });
   });
 
   it('throws WeatherApiError carrying the status on a non-2xx response', async () => {
-    server.use(
-      http.get('/api/weather', () =>
-        HttpResponse.json({ error: 'city not found' }, { status: 404 }),
-      ),
-    );
+    server.use(weatherNotFound());
 
     await expect(
       fetchWeather({ city: 'Nowhere', country: 'ZZ' }),
@@ -47,9 +40,7 @@ describe('fetchWeather', () => {
   });
 
   it('throws WeatherPayloadError on a shape that fails boundary validation', async () => {
-    server.use(
-      http.get('/api/weather', () => HttpResponse.json({ unexpected: true })),
-    );
+    server.use(weatherMalformedPayload());
 
     await expect(
       fetchWeather({ city: 'Lisbon', country: 'PT' }),
@@ -58,10 +49,16 @@ describe('fetchWeather', () => {
 
   it('throws WeatherPayloadError when the conditions array is empty', async () => {
     server.use(
-      http.get('/api/weather', () =>
-        HttpResponse.json({ ...validUpstreamBody, weather: [] }),
-      ),
+      weatherEmptyConditions({ city: 'Lisbon', country: 'PT', tempC: 18.5 }),
     );
+
+    await expect(
+      fetchWeather({ city: 'Lisbon', country: 'PT' }),
+    ).rejects.toBeInstanceOf(WeatherPayloadError);
+  });
+
+  it('throws WeatherPayloadError when the body is not valid JSON', async () => {
+    server.use(weatherUnparsableBody());
 
     await expect(
       fetchWeather({ city: 'Lisbon', country: 'PT' }),
