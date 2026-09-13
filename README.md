@@ -8,7 +8,7 @@ Single-page weather lookup: search a city, see current conditions, keep a local 
 pnpm install
 pnpm vercel link   # one-time: link this directory to the Vercel project
 pnpm vercel        # one-time: first deployment, required before `vercel dev` works
-pnpm vercel dev    # day-to-day dev command — runs Vite + the API proxy on one origin
+pnpm dev:vercel    # day-to-day dev command — runs Vite + the API proxy on one origin
 ```
 
 Copy `.env.example` to `.env.local` and set `WEATHER_API_KEY` (OpenWeather key). `vercel dev` also pulls the Development environment variables automatically if the project is linked.
@@ -17,11 +17,11 @@ Copy `.env.example` to `.env.local` and set `WEATHER_API_KEY` (OpenWeather key).
 
 ## Scripts
 
-| Script | Purpose |
-| --- | --- |
-| `pnpm vercel dev` | Primary dev command — Vite + `/api` proxy, same origin |
-| `pnpm dev:ui` | Plain `vite`, no API (styling work only — `/api/weather` 404s) |
-| `pnpm build` | Typecheck + production build |
+| Script            | Purpose                                                        |
+| ----------------- | -------------------------------------------------------------- |
+| `pnpm dev:vercel` | Primary dev command — Vite + `/api` proxy, same origin         |
+| `pnpm dev`        | Plain `vite`, no API (styling work only — `/api/weather` 404s) |
+| `pnpm build`      | Typecheck + production build                                   |
 
 ## Docs map
 
