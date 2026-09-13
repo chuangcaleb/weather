@@ -52,7 +52,7 @@ describe('ResultCard', () => {
       />,
     );
 
-    expect(screen.getByText('19°C')).toBeInTheDocument();
+    expect(screen.getByText('19°')).toBeInTheDocument();
     expect(screen.getByText('Lisbon, PT')).toBeInTheDocument();
     expect(screen.getByText('Humidity: 72%')).toBeInTheDocument();
     expect(screen.getByText('Clouds')).toBeInTheDocument();

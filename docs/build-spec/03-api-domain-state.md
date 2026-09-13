@@ -9,14 +9,14 @@ Part of [Build Spec](../build-spec.md). Read this file only — no other phase n
 - Env: single unprefixed `WEATHER_API_KEY`, read via `process.env` inside the function. Already set in the Vercel dashboard (Production/Preview/Development) and in `.env.local` for `vercel dev`. Never `VITE_`-prefixed — that inlines into the client bundle.
 - Field mapping (proxy passes these through as-is or the client reads them from the proxy's JSON):
 
-| Rendered value | JSON path |
-| --- | --- |
-| Summary | `weather[0].main` |
-| Description | `weather[0].description` |
-| Temperature (°C) | `main.temp` |
-| Humidity (%) | `main.humidity` |
-| Observation time | `dt` (unix seconds, UTC) — this is OpenWeather's own observation time, **not** the datetime of submission the page renders; keep the two distinct, derive submission time client-side |
-| Resolved city / country | `name`, `sys.country` — render these, never the user's raw input casing |
+| Rendered value          | JSON path                                                                                                                                                                             |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Summary                 | `weather[0].main`                                                                                                                                                                     |
+| Description             | `weather[0].description`                                                                                                                                                              |
+| Temperature (°)         | `main.temp`                                                                                                                                                                           |
+| Humidity (%)            | `main.humidity`                                                                                                                                                                       |
+| Observation time        | `dt` (unix seconds, UTC) — this is OpenWeather's own observation time, **not** the datetime of submission the page renders; keep the two distinct, derive submission time client-side |
+| Resolved city / country | `name`, `sys.country` — render these, never the user's raw input casing                                                                                                               |
 
 - Validate the proxy's response shape at the boundary (zod or a hand-written guard) before it crosses into typed domain code.
 - Country field is a constrained control (ISO 3166-1 alpha-2 only, see [stated-assumptions.md](../stated-assumptions.md)); the app owns code-to-name display via `Intl.DisplayNames` — the API never supplies a readable country name.
@@ -28,22 +28,22 @@ Glossary source: [CONTEXT.md](../../CONTEXT.md).
 
 ```ts
 type Query = {
-  city: string;      // raw user input, trimmed for normalization only at compare-time
-  country: string;    // ISO 3166-1 alpha-2, e.g. "PT"
+  city: string; // raw user input, trimmed for normalization only at compare-time
+  country: string; // ISO 3166-1 alpha-2, e.g. "PT"
 };
 
 type Reading = {
-  summary: string;       // weather[0].main
-  description: string;    // weather[0].description
-  temperatureC: number;    // main.temp
-  humidity: number;         // main.humidity
-  place: string;             // `${name}, ${sys.country}` — API-echoed, not user input
+  summary: string; // weather[0].main
+  description: string; // weather[0].description
+  temperatureC: number; // main.temp
+  humidity: number; // main.humidity
+  place: string; // `${name}, ${sys.country}` — API-echoed, not user input
 };
 
 type HistoryEntry = {
   query: Query;
   reading: Reading;
-  requestedAt: string;   // ISO 8601, submission time — not `dt`
+  requestedAt: string; // ISO 8601, submission time — not `dt`
 };
 
 type HistoryState = {

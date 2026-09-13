@@ -73,7 +73,7 @@ describe('App', () => {
     renderApp();
     await searchFor('Lisbon', 'PT');
 
-    expect(await within(resultCard()).findByText('19°C')).toBeInTheDocument();
+    expect(await within(resultCard()).findByText('19°')).toBeInTheDocument();
     expect(within(resultCard()).getByText('Lisbon, PT')).toBeInTheDocument();
 
     const rows = await screen.findAllByRole('listitem');
@@ -141,7 +141,7 @@ describe('App', () => {
       within(row).getByRole('button', { name: 'Search Lisbon, PT again' }),
     );
 
-    expect(await within(resultCard()).findByText('19°C')).toBeInTheDocument();
+    expect(await within(resultCard()).findByText('19°')).toBeInTheDocument();
   });
 
   it('deletes a history row without clearing the current reading', async () => {
@@ -159,6 +159,6 @@ describe('App', () => {
     await user.click(screen.getByRole('button', { name: 'Delete Lisbon, PT' }));
 
     expect(screen.getByText('No searches yet.')).toBeInTheDocument();
-    expect(within(resultCard()).getByText('19°C')).toBeInTheDocument();
+    expect(within(resultCard()).getByText('19°')).toBeInTheDocument();
   });
 });

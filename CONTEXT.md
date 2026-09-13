@@ -21,7 +21,7 @@ The user's submitted search input: `{ city, country }`, country an ISO 3166-1 al
 _Avoid_: search term, search
 
 **Reading**:
-A snapshot of weather conditions at one moment for one place: summary, temperature (°C), high/low temperature (°C), humidity, plus the place name as echoed back by the API (not the user's raw input casing).
+A snapshot of weather conditions at one moment for one place: summary, temperature (°), high/low temperature (°), humidity, plus the place name as echoed back by the API (not the user's raw input casing).
 _Avoid_: result, weather data, conditions, description
 
 **History entry**:
