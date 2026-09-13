@@ -1,9 +1,7 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   HISTORY_CAP,
-  HISTORY_STORAGE_KEY,
   historyReducer,
-  initHistoryState,
   selectSortedEntries,
 } from './historyReducer';
 import type { HistoryState, Query, Reading } from './types';
@@ -92,6 +90,27 @@ describe('historyReducer', () => {
     expect(overCap.entries.some((e) => e.query.city === 'City0')).toBe(false);
     expect(overCap.entries.some((e) => e.query.city === 'Newest')).toBe(true);
   });
+
+  it('degrades to memory-only when localStorage throws on write, without surfacing an error to the caller', () => {
+    const setItemSpy = vi
+      .spyOn(Storage.prototype, 'setItem')
+      .mockImplementation(() => {
+        throw new Error('quota exceeded');
+      });
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const next = historyReducer(emptyState, {
+      type: 'search:succeeded',
+      query: query('Lisbon'),
+      reading,
+      requestedAt: '2026-01-01T00:00:00.000Z',
+    });
+
+    expect(next.entries).toHaveLength(1);
+    expect(consoleSpy).toHaveBeenCalled();
+    consoleSpy.mockRestore();
+    setItemSpy.mockRestore();
+  });
 });
 
 describe('selectSortedEntries', () => {
@@ -116,69 +135,5 @@ describe('selectSortedEntries', () => {
       'Newer',
       'Older',
     ]);
-  });
-});
-
-describe('initHistoryState', () => {
-  let setItemSpy: ReturnType<typeof vi.spyOn<Storage, 'setItem'>>;
-
-  beforeEach(() => {
-    localStorage.clear();
-    setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
-  });
-
-  afterEach(() => {
-    setItemSpy.mockRestore();
-  });
-
-  it('reads persisted state synchronously on init', () => {
-    const persisted: HistoryState = {
-      schemaVersion: 1,
-      entries: [
-        {
-          query: query('Lisbon'),
-          reading,
-          requestedAt: '2026-01-01T00:00:00.000Z',
-        },
-      ],
-    };
-    localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(persisted));
-
-    expect(initHistoryState()).toEqual(persisted);
-  });
-
-  it('resets silently on malformed JSON instead of throwing', () => {
-    localStorage.setItem(HISTORY_STORAGE_KEY, 'not json');
-    expect(initHistoryState()).toEqual(emptyState);
-  });
-
-  it('resets silently on a schema version mismatch', () => {
-    localStorage.setItem(
-      HISTORY_STORAGE_KEY,
-      JSON.stringify({ schemaVersion: 2, entries: [] }),
-    );
-    expect(initHistoryState()).toEqual(emptyState);
-  });
-
-  it('returns empty state when nothing is persisted yet', () => {
-    expect(initHistoryState()).toEqual(emptyState);
-  });
-
-  it('degrades to memory-only when localStorage throws on write, without surfacing an error to the caller', () => {
-    setItemSpy.mockImplementation(() => {
-      throw new Error('quota exceeded');
-    });
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-    const next = historyReducer(emptyState, {
-      type: 'search:succeeded',
-      query: query('Lisbon'),
-      reading,
-      requestedAt: '2026-01-01T00:00:00.000Z',
-    });
-
-    expect(next.entries).toHaveLength(1);
-    expect(consoleSpy).toHaveBeenCalled();
-    consoleSpy.mockRestore();
   });
 });

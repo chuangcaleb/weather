@@ -1,9 +1,6 @@
 import { useReducer } from 'react';
-import {
-  historyReducer,
-  initHistoryState,
-  selectSortedEntries,
-} from './historyReducer';
+import { historyReducer, selectSortedEntries } from './historyReducer';
+import { initHistoryState } from './historyStorage';
 import type { HistoryEntry, Query, Reading } from './types';
 
 export function useHistory() {

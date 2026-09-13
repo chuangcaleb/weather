@@ -1,37 +1,25 @@
-import { useEffect, useRef, useState } from 'react';
-import { useCurrentReading } from './useCurrentReading';
+import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useCurrentReading, weatherQueryOptions } from './useCurrentReading';
 import { useHistory } from './useHistory';
-import { normalizeQuery } from './normalizeQuery';
 import type { Query } from './types';
 
 export function useWeatherSearch() {
   const [submittedQuery, setSubmittedQuery] = useState<Query | null>(null);
   const currentReading = useCurrentReading(submittedQuery);
   const { entries, recordSuccess, deleteEntry } = useHistory();
-  const recordedForKey = useRef<string | null>(null);
-
-  useEffect(() => {
-    if (!currentReading.isSuccess || !submittedQuery) return;
-
-    const key = normalizeQuery(submittedQuery);
-    if (recordedForKey.current === key) return;
-
-    recordedForKey.current = key;
-    recordSuccess(
-      submittedQuery,
-      currentReading.data,
-      new Date().toISOString(),
-    );
-  }, [
-    currentReading.isSuccess,
-    currentReading.data,
-    submittedQuery,
-    recordSuccess,
-  ]);
+  const queryClient = useQueryClient();
 
   function search(query: Query) {
-    recordedForKey.current = null;
     setSubmittedQuery(query);
+    queryClient
+      .fetchQuery(weatherQueryOptions(query))
+      .then((reading) =>
+        recordSuccess(query, reading, new Date().toISOString()),
+      )
+      .catch(() => {
+        // current reading surfaces its own error state via useQuery; history stays untouched
+      });
   }
 
   return { search, currentReading, history: entries, deleteEntry };
