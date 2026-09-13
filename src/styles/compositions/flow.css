@@ -1,0 +1,5 @@
+@layer compositions {
+  .flow > * + * {
+    margin-top: var(--gutter, 1em);
+  }
+}
