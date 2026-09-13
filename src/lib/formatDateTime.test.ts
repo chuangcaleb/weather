@@ -9,10 +9,6 @@ describe('formatDateTime', () => {
     expect(formatDateTime(localMoment.toISOString())).toBe('01/09/2022, 09:41');
   });
 
-  it('accepts epoch milliseconds', () => {
-    expect(formatDateTime(localMoment.getTime())).toBe('01/09/2022, 09:41');
-  });
-
   it('returns an empty string for an unparseable value', () => {
     expect(formatDateTime('not a date')).toBe('');
   });

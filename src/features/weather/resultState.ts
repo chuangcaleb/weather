@@ -61,11 +61,12 @@ export function toResultState(
   if (!query) return { status: 'idle' };
   if (readingQuery.isFetching) return { status: 'pending' };
 
-  if (readingQuery.error) {
-    // A superseded search aborts; the search that superseded it owns the UI.
-    if (readingQuery.error.name === 'AbortError') return { status: 'pending' };
-    return { status: 'error', ...describeError(readingQuery.error, query) };
-  }
+  // A superseded search aborts. That is not a failure the user asked about, so
+  // it shows nothing of its own — whatever was on screen stays on screen.
+  const error =
+    readingQuery.error?.name === 'AbortError' ? null : readingQuery.error;
+
+  if (error) return { status: 'error', ...describeError(error, query) };
 
   if (readingQuery.data)
     return { status: 'success', reading: readingQuery.data };

@@ -34,8 +34,13 @@ export function resolveTheme(): Theme {
   return readStoredTheme() ?? readSystemTheme();
 }
 
-export function applyTheme(theme: Theme): void {
+/** The single writer of the attribute the stylesheet selects on. */
+export function setThemeAttribute(theme: Theme): void {
   document.documentElement.dataset.theme = theme;
+}
+
+export function applyTheme(theme: Theme): void {
+  setThemeAttribute(theme);
   try {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   } catch (error) {

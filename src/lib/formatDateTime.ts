@@ -9,8 +9,9 @@ const formatter = new Intl.DateTimeFormat('en-GB', {
   hour12: false,
 });
 
-export function formatDateTime(value: string | number): string {
-  const date = new Date(value);
+/** Takes the ISO-8601 stamp every `requestedAt` in the app carries. */
+export function formatDateTime(requestedAt: string): string {
+  const date = new Date(requestedAt);
   if (Number.isNaN(date.getTime())) return '';
   return formatter.format(date);
 }

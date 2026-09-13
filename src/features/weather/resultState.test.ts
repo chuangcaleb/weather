@@ -26,13 +26,17 @@ describe('toResultState', () => {
     });
   });
 
-  it('is pending while a superseded search settles its abort', () => {
+  it('shows nothing of its own when a superseded search aborts', () => {
     const aborted = Object.assign(new Error('aborted'), {
       name: 'AbortError',
     });
+
     expect(toResultState(query, { ...settled, error: aborted })).toEqual({
-      status: 'pending',
+      status: 'idle',
     });
+    expect(
+      toResultState(query, { ...settled, data: reading, error: aborted }),
+    ).toEqual({ status: 'success', reading });
   });
 
   it('renders the reading on success', () => {

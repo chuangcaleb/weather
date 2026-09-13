@@ -8,13 +8,4 @@
 
     padding-block-end: var(--size-8);
   }
-
-  .text-button {
-    padding: var(--size-2) var(--size-3);
-    border: 1px solid var(--accent);
-    border-radius: var(--radius-2);
-    background: transparent;
-    color: var(--accent);
-    cursor: pointer;
-  }
 }

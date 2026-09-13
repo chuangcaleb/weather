@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { COUNTRY_OPTIONS, countryName } from './countries';
+import { COUNTRY_OPTIONS } from './countries';
 
 describe('COUNTRY_OPTIONS', () => {
   it('pairs every alpha-2 code with a resolved name', () => {
@@ -18,15 +18,5 @@ describe('COUNTRY_OPTIONS', () => {
   it('is sorted by display name', () => {
     const names = COUNTRY_OPTIONS.map((option) => option.name);
     expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b)));
-  });
-});
-
-describe('countryName', () => {
-  it('resolves a lowercase code', () => {
-    expect(countryName('pt')).toBe('Portugal');
-  });
-
-  it('falls back to the code it was given', () => {
-    expect(countryName('QX')).toBe('QX');
   });
 });

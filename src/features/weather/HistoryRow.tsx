@@ -6,11 +6,11 @@ import type { HistoryEntry, Query } from './types';
 
 type Props = {
   entry: HistoryEntry;
-  onResearch: (query: Query) => void;
+  onSearchAgain: (query: Query) => void;
   onDelete: (query: Query) => void;
 };
 
-export function HistoryRow({ entry, onResearch, onDelete }: Props) {
+export function HistoryRow({ entry, onSearchAgain, onDelete }: Props) {
   const { query, requestedAt } = entry;
   const label = `${query.city}, ${query.country}`;
 
@@ -24,7 +24,7 @@ export function HistoryRow({ entry, onResearch, onDelete }: Props) {
         <IconButton
           label={`Search ${label} again`}
           variant="ghost"
-          onClick={() => onResearch(query)}
+          onClick={() => onSearchAgain(query)}
         >
           <SearchIcon />
         </IconButton>

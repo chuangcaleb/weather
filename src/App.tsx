@@ -30,19 +30,16 @@ export function App() {
       </header>
 
       <main className="wrapper flow page-main">
-        <SearchForm
-          onSearch={search}
-          isPending={resultState.status === 'pending'}
-        />
+        <SearchForm onSearch={search} />
         {/* Result and history are siblings: same page, independent lifecycles. */}
         <ResultCard
           state={resultState}
-          requestedAt={currentReading.dataUpdatedAt}
+          requestedAt={new Date(currentReading.dataUpdatedAt).toISOString()}
           onRetry={retry}
         />
         <HistoryList
           entries={history}
-          onResearch={search}
+          onSearchAgain={search}
           onDelete={deleteEntry}
         />
       </main>

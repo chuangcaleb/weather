@@ -10,18 +10,20 @@
       // be on <html> before any stylesheet is applied or the page flashes the
       // wrong one. Mirrors resolveTheme() in src/lib/theme.ts.
       (function () {
+        var stored = null;
         try {
-          var stored = localStorage.getItem('weather:theme');
-          var theme =
-            stored === 'light' || stored === 'dark'
-              ? stored
-              : window.matchMedia('(prefers-color-scheme: dark)').matches
-                ? 'dark'
-                : 'light';
-          document.documentElement.dataset.theme = theme;
+          stored = localStorage.getItem('weather:theme');
         } catch (error) {
-          document.documentElement.dataset.theme = 'light';
+          // Storage blocked: fall through to the system preference, exactly as
+          // resolveTheme() does, or the two disagree and the page flips.
         }
+        var theme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+        document.documentElement.dataset.theme = theme;
       })();
     </script>
   </head>

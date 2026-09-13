@@ -12,15 +12,15 @@ function readTextField(data: FormData, name: string): string {
 
 type Props = {
   onSearch: (query: Query) => void;
-  isPending: boolean;
 };
 
 /**
- * Uncontrolled on purpose: the fields carry `required`, the browser's own
- * `:user-invalid` surfaces the message, and the values are read once on submit.
- * Mirroring them into state would only duplicate what the DOM already holds.
+ * Uncontrolled on purpose: the fields carry their own constraints, the browser's
+ * `:user-invalid` reveals the message each field is described by, and the values
+ * are read once on submit. Mirroring them into state would only duplicate what
+ * the DOM already holds.
  */
-export function SearchForm({ onSearch, isPending }: Props) {
+export function SearchForm({ onSearch }: Props) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -28,18 +28,15 @@ export function SearchForm({ onSearch, isPending }: Props) {
     const city = readTextField(data, 'city').trim();
     const country = readTextField(data, 'country');
 
-    // `required` rejects an empty field, but not one holding only spaces.
+    // The field constraints already rejected both of these; this is the guard
+    // that keeps a malformed Query out of the API if a browser ever disagrees.
     if (!city || !country) return;
 
     onSearch({ city, country });
   }
 
   return (
-    <form
-      className="search-form cluster"
-      onSubmit={handleSubmit}
-      noValidate={false}
-    >
+    <form className="search-form cluster" onSubmit={handleSubmit}>
       <div className="search-field">
         <label htmlFor="city">City</label>
         <input
@@ -48,13 +45,25 @@ export function SearchForm({ onSearch, isPending }: Props) {
           type="text"
           autoComplete="address-level2"
           required
+          // `required` alone accepts a field holding only spaces.
+          pattern=".*\S.*"
+          aria-describedby="city-error"
         />
+        <p id="city-error" className="search-field__error">
+          Enter a city name.
+        </p>
       </div>
 
       <div className="search-form__country cluster">
         <div className="search-field">
           <label htmlFor="country">Country</label>
-          <select id="country" name="country" defaultValue="" required>
+          <select
+            id="country"
+            name="country"
+            defaultValue=""
+            required
+            aria-describedby="country-error"
+          >
             <option value="" disabled>
               Select a country
             </option>
@@ -64,14 +73,12 @@ export function SearchForm({ onSearch, isPending }: Props) {
               </option>
             ))}
           </select>
+          <p id="country-error" className="search-field__error">
+            Choose a country.
+          </p>
         </div>
 
-        <IconButton
-          label="Search"
-          type="submit"
-          size="large"
-          disabled={isPending}
-        >
+        <IconButton label="Search" type="submit" size="large">
           <SearchIcon />
         </IconButton>
       </div>

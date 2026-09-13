@@ -39,4 +39,14 @@
     inline-size: 1.75rem;
     block-size: 1.75rem;
   }
+
+  /* The inline, text-only counterpart: retry and other in-card actions. */
+  .text-button {
+    padding: var(--size-2) var(--size-3);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-2);
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+  }
 }

@@ -274,7 +274,3 @@ export const COUNTRY_OPTIONS: CountryOption[] = COUNTRY_CODES.map((code) => ({
   code,
   name: displayNames.of(code) ?? code,
 })).sort((a, b) => a.name.localeCompare(b.name));
-
-export function countryName(code: string): string {
-  return displayNames.of(code.toUpperCase()) ?? code;
-}

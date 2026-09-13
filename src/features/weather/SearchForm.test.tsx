@@ -7,7 +7,7 @@ describe('SearchForm', () => {
   it('submits the typed city and the selected country code', async () => {
     const user = userEvent.setup();
     const onSearch = vi.fn();
-    render(<SearchForm onSearch={onSearch} isPending={false} />);
+    render(<SearchForm onSearch={onSearch} />);
 
     await user.type(screen.getByLabelText('City'), 'Lisbon');
     await user.selectOptions(screen.getByLabelText('Country'), 'PT');
@@ -19,7 +19,7 @@ describe('SearchForm', () => {
   it('trims surrounding whitespace off the city', async () => {
     const user = userEvent.setup();
     const onSearch = vi.fn();
-    render(<SearchForm onSearch={onSearch} isPending={false} />);
+    render(<SearchForm onSearch={onSearch} />);
 
     await user.type(screen.getByLabelText('City'), '  Lisbon  ');
     await user.selectOptions(screen.getByLabelText('Country'), 'PT');
@@ -29,7 +29,7 @@ describe('SearchForm', () => {
   });
 
   it('leaves both fields required so the browser blocks an empty submit', () => {
-    render(<SearchForm onSearch={vi.fn()} isPending={false} />);
+    render(<SearchForm onSearch={vi.fn()} />);
 
     expect(screen.getByLabelText('City')).toBeRequired();
     expect(screen.getByLabelText('Country')).toBeRequired();
@@ -38,7 +38,7 @@ describe('SearchForm', () => {
   it('never submits a blank city', async () => {
     const user = userEvent.setup();
     const onSearch = vi.fn();
-    render(<SearchForm onSearch={onSearch} isPending={false} />);
+    render(<SearchForm onSearch={onSearch} />);
 
     await user.selectOptions(screen.getByLabelText('Country'), 'PT');
     await user.click(screen.getByRole('button', { name: 'Search' }));
@@ -46,14 +46,32 @@ describe('SearchForm', () => {
     expect(onSearch).not.toHaveBeenCalled();
   });
 
-  it('disables submitting while a search is in flight', () => {
-    render(<SearchForm onSearch={vi.fn()} isPending />);
+  it('rejects a city of nothing but spaces', async () => {
+    const user = userEvent.setup();
+    const onSearch = vi.fn();
+    render(<SearchForm onSearch={onSearch} />);
 
-    expect(screen.getByRole('button', { name: 'Search' })).toBeDisabled();
+    await user.type(screen.getByLabelText('City'), '   ');
+    await user.selectOptions(screen.getByLabelText('Country'), 'PT');
+    await user.click(screen.getByRole('button', { name: 'Search' }));
+
+    expect(onSearch).not.toHaveBeenCalled();
+    expect(screen.getByLabelText('City')).toBeInvalid();
+  });
+
+  it('describes each field by the message its own constraint reveals', () => {
+    render(<SearchForm onSearch={vi.fn()} />);
+
+    expect(screen.getByLabelText('City')).toHaveAccessibleDescription(
+      'Enter a city name.',
+    );
+    expect(screen.getByLabelText('Country')).toHaveAccessibleDescription(
+      'Choose a country.',
+    );
   });
 
   it('offers country names, valued by alpha-2 code', () => {
-    render(<SearchForm onSearch={vi.fn()} isPending={false} />);
+    render(<SearchForm onSearch={vi.fn()} />);
 
     const portugal = screen.getByRole('option', { name: 'Portugal' });
     expect(portugal).toHaveValue('PT');

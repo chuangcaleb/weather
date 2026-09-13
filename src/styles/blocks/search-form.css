@@ -13,6 +13,7 @@
   }
 
   .search-field {
+    position: relative;
     display: flex;
     flex: 1 1 12rem;
     flex-direction: column;
@@ -45,5 +46,24 @@
     appearance: none;
     outline: none;
     text-overflow: ellipsis;
+  }
+
+  /* The field's own message: hidden until the browser judges the field invalid,
+     so `aria-describedby` only describes a field that has something wrong. */
+  .search-field__error {
+    display: none;
+    position: absolute;
+    inset-block-start: calc(100% + var(--size-1));
+    inset-inline-start: var(--size-2);
+    color: var(--red-7);
+    font-size: var(--font-size-0);
+  }
+
+  .search-field:has(:user-invalid) {
+    border-color: var(--red-7);
+  }
+
+  .search-field:has(:user-invalid) .search-field__error {
+    display: block;
   }
 }

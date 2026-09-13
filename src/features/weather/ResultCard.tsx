@@ -7,8 +7,8 @@ import type { Reading } from './types';
 
 type Props = {
   state: ResultState;
-  /** Epoch milliseconds of the search that produced the reading on screen. */
-  requestedAt: number;
+  /** ISO-8601 stamp of the search that produced the reading on screen. */
+  requestedAt: string;
   onRetry: () => void;
 };
 
@@ -17,7 +17,7 @@ function ReadingView({
   requestedAt,
 }: {
   reading: Reading;
-  requestedAt: number;
+  requestedAt: string;
 }) {
   return (
     <>
@@ -65,16 +65,16 @@ function ResultBody({ state, requestedAt, onRetry }: Props) {
  * The whole result slot, including its live region — so every transition between
  * idle, pending, reading, and error swaps inside one announced container.
  */
-export function ResultCard(props: Props) {
+export function ResultCard({ state, requestedAt, onRetry }: Props) {
   return (
     <section
       className="result-card card flow"
       aria-label="Current weather"
       aria-live="polite"
       aria-atomic="true"
-      data-status={props.state.status}
+      data-status={state.status}
     >
-      <ResultBody {...props} />
+      <ResultBody state={state} requestedAt={requestedAt} onRetry={onRetry} />
     </section>
   );
 }

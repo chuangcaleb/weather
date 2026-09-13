@@ -12,14 +12,14 @@ const reading: Reading = {
   place: 'Lisbon, PT',
 };
 
-const requestedAt = new Date(2022, 8, 1, 9, 41).getTime();
+const requestedAt = new Date(2022, 8, 1, 9, 41).toISOString();
 
 describe('ResultCard', () => {
   it('invites a first search when idle', () => {
     render(
       <ResultCard
         state={{ status: 'idle' }}
-        requestedAt={0}
+        requestedAt=""
         onRetry={vi.fn()}
       />,
     );
@@ -33,7 +33,7 @@ describe('ResultCard', () => {
     render(
       <ResultCard
         state={{ status: 'pending' }}
-        requestedAt={0}
+        requestedAt=""
         onRetry={vi.fn()}
       />,
     );
@@ -69,7 +69,7 @@ describe('ResultCard', () => {
           message: 'Weather service unavailable. Try again shortly.',
           canRetry: true,
         }}
-        requestedAt={0}
+        requestedAt=""
         onRetry={onRetry}
       />,
     );
@@ -90,7 +90,7 @@ describe('ResultCard', () => {
           message: 'Something went wrong.',
           canRetry: false,
         }}
-        requestedAt={0}
+        requestedAt=""
         onRetry={vi.fn()}
       />,
     );

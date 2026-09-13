@@ -24,7 +24,7 @@ const osaka = entry('Osaka', 'JP', new Date(2022, 8, 1, 8, 12));
 describe('HistoryList', () => {
   it('says so when nothing has been searched yet', () => {
     render(
-      <HistoryList entries={[]} onResearch={vi.fn()} onDelete={vi.fn()} />,
+      <HistoryList entries={[]} onSearchAgain={vi.fn()} onDelete={vi.fn()} />,
     );
 
     expect(screen.getByText('No searches yet.')).toBeInTheDocument();
@@ -35,7 +35,7 @@ describe('HistoryList', () => {
     render(
       <HistoryList
         entries={[lisbon, osaka]}
-        onResearch={vi.fn()}
+        onSearchAgain={vi.fn()}
         onDelete={vi.fn()}
       />,
     );
@@ -50,7 +50,7 @@ describe('HistoryList', () => {
     render(
       <HistoryList
         entries={[lisbon]}
-        onResearch={vi.fn()}
+        onSearchAgain={vi.fn()}
         onDelete={vi.fn()}
       />,
     );
@@ -60,11 +60,11 @@ describe('HistoryList', () => {
 
   it('re-searches the row it was clicked on', async () => {
     const user = userEvent.setup();
-    const onResearch = vi.fn();
+    const onSearchAgain = vi.fn();
     render(
       <HistoryList
         entries={[lisbon, osaka]}
-        onResearch={onResearch}
+        onSearchAgain={onSearchAgain}
         onDelete={vi.fn()}
       />,
     );
@@ -74,7 +74,10 @@ describe('HistoryList', () => {
       within(second!).getByRole('button', { name: 'Search Osaka, JP again' }),
     );
 
-    expect(onResearch).toHaveBeenCalledWith({ city: 'Osaka', country: 'JP' });
+    expect(onSearchAgain).toHaveBeenCalledWith({
+      city: 'Osaka',
+      country: 'JP',
+    });
   });
 
   it('deletes the row it was clicked on', async () => {
@@ -83,7 +86,7 @@ describe('HistoryList', () => {
     render(
       <HistoryList
         entries={[lisbon]}
-        onResearch={vi.fn()}
+        onSearchAgain={vi.fn()}
         onDelete={onDelete}
       />,
     );
