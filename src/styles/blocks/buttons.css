@@ -4,9 +4,8 @@
   .icon-button {
     display: grid;
     place-items: center;
-    /* kept magic numbers for fixed-size a11y */
-    inline-size: 2.75rem;
-    block-size: 2.75rem;
+    inline-size: var(--size-8);
+    block-size: var(--size-8);
     flex: 0 0 auto;
     border: var(--border-size-2) solid var(--accent);
     border-radius: var(--radius-3);

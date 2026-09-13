@@ -6,9 +6,12 @@
     list-style: none;
   }
 
-  /* Wrap point is row width alone, not label length: a container query
-     (not flex-wrap) decides row vs stacked, so every row breaks at the
-     same width regardless of how long its city/country text is. */
+  /* Exception to spec (docs/build-spec/04-components.md §8: "no responsive
+     breakpoints anywhere; wrapping is flex-wrap-driven"): wrap point is row
+     width alone, not label length, so a container query decides row vs
+     stacked rather than flex-wrap, and every row breaks at the same width
+     regardless of how long its city/country text is. No flex-wrap/flex-basis
+     equivalent found in time — revisit if one turns up. */
   .history-row {
     --gutter: var(--size-1);
 
