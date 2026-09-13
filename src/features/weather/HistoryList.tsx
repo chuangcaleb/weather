@@ -1,18 +1,14 @@
-import { normalizeQuery } from './normalizeQuery';
 import { HistoryRow } from './HistoryRow';
+import { normalizeQuery } from './normalizeQuery';
 import type { HistoryEntry, Query } from './types';
 
 type Props = {
-  /** Already sorted by `requestedAt` descending and capped by the reducer. */
   entries: HistoryEntry[];
   onSearchAgain: (query: Query) => void;
   onDelete: (query: Query) => void;
 };
 
-/**
- * A sibling region to the result card, never nested inside it — the two have
- * independent lifecycles.
- */
+/** Pure render. Sort/limit handled by consumer. */
 export function HistoryList({ entries, onSearchAgain, onDelete }: Props) {
   return (
     <section

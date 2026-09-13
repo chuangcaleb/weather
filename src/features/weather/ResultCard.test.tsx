@@ -6,8 +6,9 @@ import type { Reading } from './types';
 
 const reading: Reading = {
   summary: 'Clouds',
-  description: 'overcast clouds',
   temperatureC: 18.5,
+  highC: 21.2,
+  lowC: 15.9,
   humidity: 72,
   place: 'Lisbon, PT',
 };
@@ -55,7 +56,7 @@ describe('ResultCard', () => {
     expect(screen.getByText('Lisbon, PT')).toBeInTheDocument();
     expect(screen.getByText('Humidity: 72%')).toBeInTheDocument();
     expect(screen.getByText('Clouds')).toBeInTheDocument();
-    expect(screen.getByText('overcast clouds')).toBeInTheDocument();
+    expect(screen.getByText('H: 21° L: 16°')).toBeInTheDocument();
     expect(screen.getByText('01/09/2022, 09:41')).toBeInTheDocument();
   });
 

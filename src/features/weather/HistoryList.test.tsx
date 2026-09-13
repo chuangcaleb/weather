@@ -9,8 +9,9 @@ function entry(city: string, country: string, requestedAt: Date): HistoryEntry {
     query: { city, country },
     reading: {
       summary: 'Clouds',
-      description: 'overcast clouds',
       temperatureC: 18.5,
+      highC: 21.2,
+      lowC: 15.9,
       humidity: 72,
       place: `${city}, ${country}`,
     },

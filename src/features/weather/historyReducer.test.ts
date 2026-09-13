@@ -8,8 +8,9 @@ import type { HistoryState, Query, Reading } from './types';
 
 const reading: Reading = {
   summary: 'Clouds',
-  description: 'overcast clouds',
   temperatureC: 18,
+  highC: 20,
+  lowC: 15,
   humidity: 70,
   place: 'Lisbon, PT',
 };

@@ -23,8 +23,8 @@ beforeEach(() => localStorage.clear());
 
 function upstreamBody(name: string, country: string, temp: number) {
   return {
-    weather: [{ main: 'Clouds', description: 'overcast clouds' }],
-    main: { temp, humidity: 72 },
+    weather: [{ main: 'Clouds' }],
+    main: { temp, temp_max: temp + 3, temp_min: temp - 3, humidity: 72 },
     name,
     sys: { country },
   };

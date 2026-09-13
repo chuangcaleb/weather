@@ -7,8 +7,9 @@ const query: Query = { city: 'Lisbon', country: 'PT' };
 
 const reading: Reading = {
   summary: 'Clouds',
-  description: 'overcast clouds',
   temperatureC: 18.5,
+  highC: 21.2,
+  lowC: 15.9,
   humidity: 72,
   place: 'Lisbon, PT',
 };

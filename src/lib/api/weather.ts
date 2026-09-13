@@ -10,12 +10,13 @@ const weatherResponseSchema = z.object({
     .array(
       z.object({
         main: z.string(),
-        description: z.string(),
       }),
     )
     .min(1),
   main: z.object({
     temp: z.number(),
+    temp_max: z.number(),
+    temp_min: z.number(),
     humidity: z.number(),
   }),
   name: z.string(),
@@ -72,8 +73,9 @@ export async function fetchWeather(
 
   return {
     summary: weather.main,
-    description: weather.description,
     temperatureC: data.main.temp,
+    highC: data.main.temp_max,
+    lowC: data.main.temp_min,
     humidity: data.main.humidity,
     place: `${data.name}, ${data.sys.country}`,
   };

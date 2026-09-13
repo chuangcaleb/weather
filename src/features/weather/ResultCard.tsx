@@ -27,13 +27,17 @@ function ReadingView({
         <p className="result-card__temperature">
           {formatTemperature(reading.temperatureC)}
         </p>
-        <p className="result-card__description">{reading.description}</p>
+        <p className="result-card__hilo">
+          {`H: ${formatTemperature(reading.highC)} L: ${formatTemperature(reading.lowC)}`}
+        </p>
       </div>
-      <div className="cluster result-card__meta">
-        <strong>{reading.place}</strong>
-        <span>{formatDateTime(requestedAt)}</span>
-        <span>Humidity: {reading.humidity}%</span>
-        <span>{reading.summary}</span>
+      <div className="result-card__meta">
+        <div className="cluster">
+          <strong>{reading.place}</strong>
+          <span>{formatDateTime(requestedAt)}</span>
+          <span>Humidity: {reading.humidity}%</span>
+          <span>{reading.summary}</span>
+        </div>
       </div>
     </>
   );

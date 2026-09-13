@@ -10,8 +10,8 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 const validUpstreamBody = {
-  weather: [{ main: 'Clouds', description: 'overcast clouds' }],
-  main: { temp: 18.5, humidity: 72 },
+  weather: [{ main: 'Clouds' }],
+  main: { temp: 18.5, temp_max: 21.2, temp_min: 15.9, humidity: 72 },
   name: 'Lisbon',
   sys: { country: 'PT' },
 };
@@ -26,8 +26,9 @@ describe('fetchWeather', () => {
 
     expect(reading).toEqual({
       summary: 'Clouds',
-      description: 'overcast clouds',
       temperatureC: 18.5,
+      highC: 21.2,
+      lowC: 15.9,
       humidity: 72,
       place: 'Lisbon, PT',
     });

@@ -1,6 +1,6 @@
 @layer blocks {
   .result-card {
-    --gutter: var(--size-5);
+    --gutter: var(--size-3);
 
     /* Headroom for the icon that overhangs the top edge. */
     margin-block-start: var(--size-fluid-6);
@@ -26,6 +26,12 @@
     --gutter: var(--size-2);
   }
 
+  /* Icon is absolutely positioned (out of flow) but still counts as a DOM
+     sibling, so `.flow`'s `* + *` rule would otherwise push the headline down. */
+  .condition-icon + * {
+    margin-block-start: 0;
+  }
+
   .result-card__temperature {
     color: var(--accent);
     font-size: calc(var(--font-size-8) * 1.75);
@@ -33,16 +39,18 @@
     line-height: 1;
   }
 
-  .result-card__description {
+  .result-card__hilo {
     color: var(--ink-2);
     font-size: var(--font-size-2);
   }
 
   .result-card__meta {
-    --gutter: var(--size-2) var(--size-5);
-
     color: var(--ink-2);
     font-size: var(--font-size-2);
+  }
+
+  .result-card__meta .cluster {
+    --gutter: var(--size-2) var(--size-5);
   }
 
   .result-card__meta strong {

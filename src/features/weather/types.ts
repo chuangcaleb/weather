@@ -5,8 +5,9 @@ export type Query = {
 
 export type Reading = {
   summary: string;
-  description: string;
   temperatureC: number;
+  highC: number;
+  lowC: number;
   humidity: number;
   place: string;
 };
