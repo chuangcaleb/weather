@@ -9,11 +9,7 @@
     --ink-2: hsl(261 20% 38%);
     --accent: hsl(266 60% 42%);
     --card-edge: hsl(0 0% 100% / 55%);
-    --page-backdrop: radial-gradient(
-      circle at 20% 0%,
-      hsl(266 70% 88%),
-      hsl(261 45% 97%) 60%
-    );
+    --page-backdrop: url('/backgrounds/background-light.webp');
 
     /* Shared control height: every field and every large button lines up on it. */
     --control-height: 4rem;
@@ -27,11 +23,7 @@
     --ink-2: hsl(261 15% 76%);
     --accent: hsl(266 70% 80%);
     --card-edge: hsl(0 0% 100% / 14%);
-    --page-backdrop: radial-gradient(
-      circle at 20% 0%,
-      hsl(266 40% 32%),
-      hsl(261 40% 14%) 60%
-    );
+    --page-backdrop: url('/backgrounds/background-dark.webp');
   }
 
   html {
@@ -39,7 +31,9 @@
     color: var(--ink-1);
     background-color: var(--surface-1);
     background-image: var(--page-backdrop);
-    background-attachment: fixed;
+    background-size: cover;
+    background-position: top center;
+    background-repeat: no-repeat;
   }
 
   body {
