@@ -28,6 +28,10 @@ _Avoid_: result, weather data, conditions
 One row in the persisted Search History list: `{ query, reading, requestedAt }`. A snapshot tagged by the query that produced it, not a live query that re-runs on its own. Re-searching a query already present overwrites that entry's reading and `requestedAt` in place and moves it to the top of the list — it never creates a duplicate row. A failed search (city not found, network error) never creates or touches a history entry; history only records readings actually obtained.
 _Avoid_: search history item, past search
 
+**History list**:
+The ordered set of History entries, capped at 25. Order is always derived — sorted by `requestedAt` descending, never a separately-tracked position — so a bump or delete can't desync order from recency. Past the cap, the entry with the oldest `requestedAt` is evicted silently: eviction is memory management, not a user-facing event.
+_Avoid_: history, saved searches
+
 **Current reading**:
 The Reading shown in the result card right now, driven by its own state — independent of the history list, not a view onto `history[0]`. Session-only: does not persist across reload (only history persists to `localStorage`), and is unaffected by deleting the history entry that happens to match it.
 _Avoid_: active result, displayed result
