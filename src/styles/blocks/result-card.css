@@ -3,7 +3,7 @@
     --gutter: var(--size-5);
 
     /* Headroom for the icon that overhangs the top edge. */
-    margin-block-start: var(--size-11);
+    margin-block-start: var(--size-fluid-6);
     min-block-size: 12rem;
   }
 
@@ -15,10 +15,11 @@
 
   .condition-icon {
     position: absolute;
-    inset-block-start: -6.5rem;
-    inset-inline-end: var(--size-5);
-    inline-size: 11rem;
-    block-size: 11rem;
+    inset-block-start: calc(var(--size-fluid-6) * -1);
+    inset-inline-end: var(--size-2);
+    --size: var(--size-fluid-8);
+    inline-size: var(--size);
+    block-size: var(--size);
   }
 
   .result-card__headline {
@@ -27,7 +28,7 @@
 
   .result-card__temperature {
     color: var(--accent);
-    font-size: var(--font-size-8);
+    font-size: calc(var(--font-size-8) * 1.75);
     font-weight: var(--font-weight-7);
     line-height: 1;
   }
