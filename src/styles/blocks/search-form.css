@@ -7,7 +7,7 @@
 
   /* The country field and the submit button are one unit: the button never
      wraps away from the select it belongs to. */
-  .search-form__country {
+  .search-form__city {
     flex: 1 1 12rem;
     flex-wrap: nowrap;
   }
@@ -25,7 +25,7 @@
     background: var(--surface-2);
   }
 
-  .search-form__country .search-field {
+  .search-form__city .search-field {
     flex: 1 1 auto;
     min-inline-size: 0;
   }

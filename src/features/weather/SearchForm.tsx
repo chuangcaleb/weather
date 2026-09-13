@@ -38,46 +38,45 @@ export function SearchForm({ onSearch }: Props) {
   return (
     <form className="search-form cluster" onSubmit={handleSubmit}>
       <div className="search-field">
-        <label htmlFor="city">City</label>
-        <input
-          id="city"
-          name="city"
-          type="text"
-          autoComplete="address-level2"
+        <label htmlFor="country">Country</label>
+        <select
+          id="country"
+          name="country"
+          defaultValue=""
           required
-          // `required` alone accepts a field holding only spaces.
-          pattern=".*\S.*"
-          aria-describedby="city-error"
-        />
-        <p id="city-error" className="search-field__error">
-          Enter a city name.
+          aria-describedby="country-error"
+        >
+          <option value="" disabled>
+            Select a country
+          </option>
+          {COUNTRY_OPTIONS.map((option) => (
+            <option key={option.code} value={option.code}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+        <p id="country-error" className="search-field__error">
+          Choose a country.
         </p>
       </div>
 
-      <div className="search-form__country cluster">
+      <div className="search-form__city cluster">
         <div className="search-field">
-          <label htmlFor="country">Country</label>
-          <select
-            id="country"
-            name="country"
-            defaultValue=""
+          <label htmlFor="city">City</label>
+          <input
+            id="city"
+            name="city"
+            type="text"
+            autoComplete="address-level2"
             required
-            aria-describedby="country-error"
-          >
-            <option value="" disabled>
-              Select a country
-            </option>
-            {COUNTRY_OPTIONS.map((option) => (
-              <option key={option.code} value={option.code}>
-                {option.name}
-              </option>
-            ))}
-          </select>
-          <p id="country-error" className="search-field__error">
-            Choose a country.
+            // `required` alone accepts a field holding only spaces.
+            pattern=".*\S.*"
+            aria-describedby="city-error"
+          />
+          <p id="city-error" className="search-field__error">
+            Enter a city name.
           </p>
         </div>
-
         <IconButton label="Search" type="submit" size="large">
           <SearchIcon />
         </IconButton>
