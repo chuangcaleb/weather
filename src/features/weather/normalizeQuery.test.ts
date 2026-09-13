@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeQuery } from '@/features/weather/normalizeQuery';
+import { normalizeQuery } from './normalizeQuery';
 
 describe('normalizeQuery', () => {
   it('lowercases and trims city, uppercases country', () => {

@@ -12,7 +12,7 @@ import {
   expect,
   it,
 } from 'vitest';
-import { useWeatherSearch } from '@/features/weather/useWeatherSearch';
+import { useWeatherSearch } from './useWeatherSearch';
 
 const server = setupServer();
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));

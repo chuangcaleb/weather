@@ -3,8 +3,8 @@ import {
   historyReducer,
   initHistoryState,
   selectSortedEntries,
-} from '@/features/weather/historyReducer';
-import type { HistoryEntry, Query, Reading } from '@/features/weather/types';
+} from './historyReducer';
+import type { HistoryEntry, Query, Reading } from './types';
 
 export function useHistory() {
   const [state, dispatch] = useReducer(

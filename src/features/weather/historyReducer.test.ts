@@ -5,8 +5,8 @@ import {
   historyReducer,
   initHistoryState,
   selectSortedEntries,
-} from '@/features/weather/historyReducer';
-import type { HistoryState, Query, Reading } from '@/features/weather/types';
+} from './historyReducer';
+import type { HistoryState, Query, Reading } from './types';
 
 const reading: Reading = {
   summary: 'Clouds',

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { useCurrentReading } from '@/features/weather/useCurrentReading';
-import { useHistory } from '@/features/weather/useHistory';
-import { normalizeQuery } from '@/features/weather/normalizeQuery';
-import type { Query } from '@/features/weather/types';
+import { useCurrentReading } from './useCurrentReading';
+import { useHistory } from './useHistory';
+import { normalizeQuery } from './normalizeQuery';
+import type { Query } from './types';
 
 export function useWeatherSearch() {
   const [submittedQuery, setSubmittedQuery] = useState<Query | null>(null);

@@ -1,7 +1,7 @@
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
-import { WeatherApiError, fetchWeather } from '@/lib/api/weather';
+import { WeatherApiError, fetchWeather } from './weather';
 
 const server = setupServer();
 
