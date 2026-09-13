@@ -53,7 +53,7 @@ Flat files, no barrels. `@/` alias across directories, relative paths within one
 - One shared, inheritable `--gutter` custom property — no per-primitive namespaced vars.
 - Overrides go through a block class in the `blocks` layer, re-declaring the custom property (`.result-card { --gutter: var(--size-2); }`) — never inline `style`, never a data-attribute variant (none of the five primitives has more than one configuration). See [ADR-0001](adr/0001-css-primitive-override-mechanism.md).
 - Exact primitive CSS: [css.md](agents/coding-standards/css.md).
-- Stylelint enforcement of the layer order: not yet configured — out of this build's scope, tracked in the map's Not yet specified.
+- Stylelint enforcement of the layer order: configured (issue #12) — `stylelint.config.js` + local `weather/layer-order` rule + `defensive-css/require-at-layer`, run via `pnpm lint:css`. Not yet wired into a pre-commit hook (no Lefthook config exists yet).
 
 ## 4. API access path
 
@@ -170,9 +170,14 @@ Per [UI direction, issue #10](https://github.com/chuangcaleb/weather/issues/10) 
 
 ## 9. Test bar
 
-Per [testing.md](agents/coding-standards/testing.md):
+Per [testing.md](agents/coding-standards/testing.md), plus depth decided in [issue #13](https://github.com/chuangcaleb/weather/issues/13):
 
 - Vitest + Testing Library, query by role/accessible name.
-- MSW mocks the network at the HTTP layer (mocks `/api/weather`, not the OpenWeather API directly) — real client code runs.
+- MSW mocks the network at the HTTP layer (mocks `/api/weather`, not the OpenWeather API directly) — real client code runs. Handlers live in a shared `mocks/handlers.ts`: one factory per response shape (success, 404, 429, 400, 401, 5xx), composed per test via `server.use(...)` rather than redefined inline.
 - Coverage bar: every pure helper in `lib/` (`normalizeQuery`, `formatTemperature`, history reducer logic), every component's loading/error/success branches, a regression test for every bug fix.
+- Above the floor:
+  - One `App`-level MSW-backed test for the full search→history round trip (submit succeeds, current reading updates, matching history row appears/bumps to top) — the floor's per-component branches never prove the wire-up between `ResultCard` and `HistoryList`.
+  - One reducer test for storage-full degradation: mock `localStorage.setItem` to throw, assert the reducer still updates in-memory state and doesn't crash.
+  - One direct unit test of the `api/weather.ts` proxy handler itself (plain function call, mock request) asserting it reconstructs the upstream URL from parsed params (never forwards the raw query string) and appends `units=metric` + the key. MSW intercepts before this function runs in every other test, so this is the only place that logic is exercised.
+- Not tested: cross-tab last-write-wins (issue #8) is a deliberate absence of a `storage`-event listener, not a behaviour — asserting "nothing happens" is low-signal and stays a documented decision, not a test.
 - No snapshot tests. No coverage percentage gate — the branches above are the bar.

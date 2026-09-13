@@ -1,0 +1,12 @@
+{
+  "name": "weather",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint:css": "stylelint \"src/**/*.css\" --allow-empty-input"
+  },
+  "devDependencies": {
+    "stylelint": "^17.15.0",
+    "stylelint-plugin-defensive-css": "^2.9.7"
+  }
+}
