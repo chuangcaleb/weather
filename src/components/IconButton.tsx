@@ -10,10 +10,6 @@ type Props = {
   disabled?: boolean;
 };
 
-/**
- * The one button shape in the app: outlined rounded rectangle, never a circle.
- * Size varies by context; the shape and radius family do not.
- */
 export function IconButton({
   label,
   children,

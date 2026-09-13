@@ -36,8 +36,8 @@ export class WeatherApiError extends Error {
 }
 
 /**
- * The proxy answered, but not with a shape this app can read. Distinct from
- * WeatherApiError because retrying is pointless — the same bytes come back.
+ * The proxy answered, but not with a shape this app can read.
+ * Distinct from WeatherApiError, because retrying is pointless.
  */
 export class WeatherPayloadError extends Error {
   constructor(options?: ErrorOptions) {

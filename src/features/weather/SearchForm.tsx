@@ -15,10 +15,10 @@ type Props = {
 };
 
 /**
- * Uncontrolled on purpose: the fields carry their own constraints, the browser's
- * `:user-invalid` reveals the message each field is described by, and the values
- * are read once on submit. Mirroring them into state would only duplicate what
- * the DOM already holds.
+ * Uncontrolled:
+ * - the fields carry their own constraints
+ * - the browser's `:user-invalid` reveals the message each field is described by,
+ * - the values are read once on submit.
  */
 export function SearchForm({ onSearch }: Props) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -28,8 +28,8 @@ export function SearchForm({ onSearch }: Props) {
     const city = readTextField(data, 'city').trim();
     const country = readTextField(data, 'country');
 
-    // The field constraints already rejected both of these; this is the guard
-    // that keeps a malformed Query out of the API if a browser ever disagrees.
+    // The field constraints already rejected both of these; this guard
+    // keeps a malformed Query out of the API if a browser ever conflicts.
     if (!city || !country) return;
 
     onSearch({ city, country });

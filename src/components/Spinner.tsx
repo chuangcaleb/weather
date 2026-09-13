@@ -1,7 +1,3 @@
-/**
- * The app's single loading affordance. Decorative on purpose: pending states are
- * never announced, only success and error transitions are.
- */
 export function Spinner() {
   return (
     <div className="spinner" data-testid="spinner" aria-hidden="true">

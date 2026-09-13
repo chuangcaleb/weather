@@ -5,8 +5,7 @@ type Props = { children: ReactNode };
 type State = { hasError: boolean };
 
 /**
- * The one class component in the app: React exposes no hook for catching render
- * errors. Catches thrown render failures only — query errors render inline and
+ * Catches thrown render failures only — query errors render inline and
  * never reach here.
  */
 export class ErrorBoundary extends Component<Props, State> {
