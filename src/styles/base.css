@@ -1,6 +1,15 @@
 @layer base {
-  body {
+  html {
     font-family: var(--font-sans);
     color: var(--gray-9);
+    background-color: var(--gray-0);
+  }
+
+  body {
+    font-size: var(--font-size-1);
+  }
+
+  a {
+    color: var(--blue-7);
   }
 }
