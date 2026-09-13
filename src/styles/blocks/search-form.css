@@ -1,6 +1,7 @@
 @layer blocks {
   .search-form {
     --gutter: var(--size-3);
+    --switcher-target-width: calc(var(--size-15) * 1.333);
 
     margin-block-end: var(--size-7);
   }
