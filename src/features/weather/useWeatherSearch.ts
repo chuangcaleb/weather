@@ -35,7 +35,7 @@ export function useWeatherSearch() {
   function search(query: Query) {
     setSubmittedQuery(query);
     queryClient
-      .fetchQuery(weatherQueryOptions(query))
+      .query(weatherQueryOptions(query))
       .then((reading) =>
         recordSuccess(query, reading, new Date().toISOString()),
       )

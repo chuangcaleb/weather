@@ -22,9 +22,7 @@ export function weatherQueryOptions(query: Query) {
   };
 }
 
-// Fetching is driven imperatively by useWeatherSearch's `search` (via
-// queryClient.fetchQuery), not by this hook — it only observes the shared
-// cache entry so the UI re-renders as that fetch settles.
+// Fetching is driven imperatively by useWeatherSearch's `search`, not by this hook — it only observes the shared cache entry so the UI re-renders as that fetch settles.
 export function useCurrentReading(query: Query | null) {
   return useQuery<Reading>({
     queryKey: ['weather', query ? normalizeQuery(query) : null],
