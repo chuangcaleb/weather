@@ -25,6 +25,16 @@ describe('readStoredTheme', () => {
     localStorage.setItem(THEME_STORAGE_KEY, 'aubergine');
     expect(readStoredTheme()).toBeNull();
   });
+
+  it('follows the system when storage refuses to be read', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('storage disabled');
+    });
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    expect(readStoredTheme()).toBeNull();
+    vi.restoreAllMocks();
+  });
 });
 
 describe('resolveTheme', () => {

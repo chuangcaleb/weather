@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import type { ReactNode } from 'react';
 import {
@@ -11,7 +10,15 @@ import {
   describe,
   expect,
   it,
+  vi,
 } from 'vitest';
+import {
+  weatherBadRequest,
+  weatherMalformedPayload,
+  weatherNotFound,
+  weatherSuccess,
+  weatherUnauthorized,
+} from '@/mocks/handlers';
 import { useWeatherSearch } from './useWeatherSearch';
 
 const server = setupServer();
@@ -19,12 +26,7 @@ beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-const validUpstreamBody = {
-  weather: [{ main: 'Clouds' }],
-  main: { temp: 18.5, temp_max: 21.2, temp_min: 15.9, humidity: 72 },
-  name: 'Lisbon',
-  sys: { country: 'PT' },
-};
+const lisbonReading = { city: 'Lisbon', country: 'PT', tempC: 18.5 };
 
 function wrapper({ children }: { children: ReactNode }) {
   const queryClient = new QueryClient({
@@ -39,9 +41,7 @@ beforeEach(() => localStorage.clear());
 
 describe('useWeatherSearch', () => {
   it('dispatches search:succeeded into history on a successful search, never on failure', async () => {
-    server.use(
-      http.get('/api/weather', () => HttpResponse.json(validUpstreamBody)),
-    );
+    server.use(weatherSuccess(lisbonReading));
 
     const { result } = renderHook(() => useWeatherSearch(), { wrapper });
 
@@ -55,11 +55,7 @@ describe('useWeatherSearch', () => {
   });
 
   it('leaves history untouched when the search fails', async () => {
-    server.use(
-      http.get('/api/weather', () =>
-        HttpResponse.json({ error: 'not found' }, { status: 404 }),
-      ),
-    );
+    server.use(weatherNotFound());
 
     const { result } = renderHook(() => useWeatherSearch(), { wrapper });
 
@@ -72,9 +68,7 @@ describe('useWeatherSearch', () => {
   });
 
   it('keeps the current reading independent of deleting its matching history entry', async () => {
-    server.use(
-      http.get('/api/weather', () => HttpResponse.json(validUpstreamBody)),
-    );
+    server.use(weatherSuccess(lisbonReading));
 
     const { result } = renderHook(() => useWeatherSearch(), { wrapper });
 
@@ -87,5 +81,96 @@ describe('useWeatherSearch', () => {
 
     expect(result.current.history).toHaveLength(0);
     expect(result.current.currentReading.data?.place).toBe('Lisbon, PT');
+  });
+
+  it('re-runs the last submitted query on retry', async () => {
+    server.use(weatherNotFound());
+    const { result } = renderHook(() => useWeatherSearch(), { wrapper });
+
+    act(() => result.current.search({ city: 'Nowhere', country: 'ZZ' }));
+    await waitFor(() =>
+      expect(result.current.currentReading.isError).toBe(true),
+    );
+
+    server.resetHandlers();
+    server.use(weatherSuccess({ city: 'Nowhere', country: 'ZZ', tempC: 10 }));
+    act(() => result.current.retry());
+
+    await waitFor(() =>
+      expect(result.current.currentReading.isSuccess).toBe(true),
+    );
+    expect(result.current.currentReading.data?.place).toBe('Nowhere, ZZ');
+  });
+
+  it('does nothing on retry before any search has been submitted', () => {
+    const { result } = renderHook(() => useWeatherSearch(), { wrapper });
+
+    expect(() => act(() => result.current.retry())).not.toThrow();
+    expect(result.current.currentReading.isFetched).toBe(false);
+  });
+
+  it('logs an operator fault for an unreadable payload, never surfacing it to history', async () => {
+    server.use(weatherMalformedPayload());
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const { result } = renderHook(() => useWeatherSearch(), { wrapper });
+    act(() => result.current.search({ city: 'Lisbon', country: 'PT' }));
+
+    await waitFor(() =>
+      expect(result.current.currentReading.isError).toBe(true),
+    );
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Weather API returned a payload this app cannot read.',
+      expect.anything(),
+    );
+    consoleSpy.mockRestore();
+  });
+
+  it('logs an operator fault for a 400, this app’s own request being malformed', async () => {
+    server.use(weatherBadRequest());
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const { result } = renderHook(() => useWeatherSearch(), { wrapper });
+    act(() => result.current.search({ city: 'Lisbon', country: 'PT' }));
+
+    await waitFor(() =>
+      expect(result.current.currentReading.isError).toBe(true),
+    );
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Weather API rejected the request (400).',
+      expect.anything(),
+    );
+    consoleSpy.mockRestore();
+  });
+
+  it('logs an operator fault for a 401, the deployment key being wrong', async () => {
+    server.use(weatherUnauthorized());
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const { result } = renderHook(() => useWeatherSearch(), { wrapper });
+    act(() => result.current.search({ city: 'Lisbon', country: 'PT' }));
+
+    await waitFor(() =>
+      expect(result.current.currentReading.isError).toBe(true),
+    );
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Weather API rejected the request (401).',
+      expect.anything(),
+    );
+    consoleSpy.mockRestore();
+  });
+
+  it('stays silent for a user-facing 404, not an operator fault', async () => {
+    server.use(weatherNotFound());
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const { result } = renderHook(() => useWeatherSearch(), { wrapper });
+    act(() => result.current.search({ city: 'Nowhere', country: 'ZZ' }));
+
+    await waitFor(() =>
+      expect(result.current.currentReading.isError).toBe(true),
+    );
+    expect(consoleSpy).not.toHaveBeenCalled();
+    consoleSpy.mockRestore();
   });
 });

@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <title>Weather</title>
+    <style>
+      /* --surface-1 mirrors src/styles/base.css: html paints this before the
+         external stylesheet or background image loads, so neither FOUC nor a
+         slow image shows a white flash instead. */
+      :root {
+        --surface-1: hsl(261 45% 97%);
+      }
+      [data-theme='dark'] {
+        --surface-1: hsl(261 40% 20%);
+      }
+      html {
+        background-color: var(--surface-1);
+      }
+    </style>
     <script>
       // Blocking on purpose: React mounts after first paint, so the theme has to
       // be on <html> before any stylesheet is applied or the page flashes the

@@ -1,7 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import {
   afterAll,
@@ -13,6 +12,13 @@ import {
   it,
 } from 'vitest';
 import { App } from '@/App';
+import {
+  weatherEchoesQuery,
+  weatherNotFound,
+  weatherServerError,
+  weatherSuccess,
+  weatherTooManyRequests,
+} from '@/mocks/handlers';
 
 const server = setupServer();
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
@@ -20,15 +26,6 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 beforeEach(() => localStorage.clear());
-
-function upstreamBody(name: string, country: string, temp: number) {
-  return {
-    weather: [{ main: 'Clouds' }],
-    main: { temp, temp_max: temp + 3, temp_min: temp - 3, humidity: 72 },
-    name,
-    sys: { country },
-  };
-}
 
 function renderApp() {
   const queryClient = new QueryClient({
@@ -64,11 +61,7 @@ describe('App', () => {
   });
 
   it('renders the reading and records a matching history row on a successful search', async () => {
-    server.use(
-      http.get('/api/weather', () =>
-        HttpResponse.json(upstreamBody('Lisbon', 'PT', 18.5)),
-      ),
-    );
+    server.use(weatherSuccess({ city: 'Lisbon', country: 'PT', tempC: 18.5 }));
 
     renderApp();
     await searchFor('Lisbon', 'PT');
@@ -83,12 +76,11 @@ describe('App', () => {
 
   it('bumps a repeated search to the top instead of duplicating it', async () => {
     server.use(
-      http.get('/api/weather', ({ request }) => {
-        const city = new URL(request.url).searchParams.get('city') ?? '';
-        return HttpResponse.json(
-          upstreamBody(city, city === 'Lisbon' ? 'PT' : 'JP', 18.5),
-        );
-      }),
+      weatherEchoesQuery((city) => ({
+        city,
+        country: city === 'Lisbon' ? 'PT' : 'JP',
+        tempC: 18.5,
+      })),
     );
 
     renderApp();
@@ -110,11 +102,7 @@ describe('App', () => {
   });
 
   it('shows the not-found message without touching history', async () => {
-    server.use(
-      http.get('/api/weather', () =>
-        HttpResponse.json({ error: 'not found' }, { status: 404 }),
-      ),
-    );
+    server.use(weatherNotFound());
 
     renderApp();
     await searchFor('Nowhere', 'PT');
@@ -125,12 +113,36 @@ describe('App', () => {
     expect(screen.getByText('No searches yet.')).toBeInTheDocument();
   });
 
-  it('re-searches a history row from its own button', async () => {
-    server.use(
-      http.get('/api/weather', () =>
-        HttpResponse.json(upstreamBody('Lisbon', 'PT', 18.5)),
+  it('asks the user to wait on a 429 from the real fetch path', async () => {
+    server.use(weatherTooManyRequests());
+
+    renderApp();
+    await searchFor('Lisbon', 'PT');
+
+    expect(
+      await screen.findByText('Too many searches. Try again shortly.'),
+    ).toBeInTheDocument();
+  });
+
+  it('reports the service as unavailable on a 5xx from the real fetch path', async () => {
+    server.use(weatherServerError());
+
+    renderApp();
+    await searchFor('Lisbon', 'PT');
+
+    // weatherQueryOptions retries a 5xx twice with backoff before settling into
+    // the error state, so this outlasts the default findByText timeout.
+    expect(
+      await screen.findByText(
+        'Weather service unavailable. Try again shortly.',
+        {},
+        { timeout: 10000 },
       ),
-    );
+    ).toBeInTheDocument();
+  }, 15000);
+
+  it('re-searches a history row from its own button', async () => {
+    server.use(weatherSuccess({ city: 'Lisbon', country: 'PT', tempC: 18.5 }));
 
     renderApp();
     await searchFor('Lisbon', 'PT');
@@ -145,11 +157,7 @@ describe('App', () => {
   });
 
   it('deletes a history row without clearing the current reading', async () => {
-    server.use(
-      http.get('/api/weather', () =>
-        HttpResponse.json(upstreamBody('Lisbon', 'PT', 18.5)),
-      ),
-    );
+    server.use(weatherSuccess({ city: 'Lisbon', country: 'PT', tempC: 18.5 }));
 
     renderApp();
     await searchFor('Lisbon', 'PT');

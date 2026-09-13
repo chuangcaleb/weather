@@ -2,6 +2,8 @@
 
 Single-page weather lookup: search a city, see current conditions, keep a local search history.
 
+Read [highlights.md](./docs/highlights.md) for a written showcase of v1.0.
+
 ## Setup
 
 ```bash
