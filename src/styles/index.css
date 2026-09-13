@@ -1,0 +1,7 @@
+@layer reset, tokens, base, compositions, blocks, utilities, exceptions;
+
+@import 'open-props/style' layer(tokens);
+@import './reset.css' layer(reset);
+@import './base.css' layer(base);
+@import './compositions/index.css' layer(compositions);
+@import './utilities/index.css' layer(utilities);

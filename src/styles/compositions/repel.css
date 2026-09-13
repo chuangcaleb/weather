@@ -1,0 +1,9 @@
+@layer compositions {
+  .repel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--gutter, var(--size-3));
+  }
+}
