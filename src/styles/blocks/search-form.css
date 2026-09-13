@@ -1,0 +1,49 @@
+@layer blocks {
+  .search-form {
+    --gutter: var(--size-3);
+
+    margin-block-end: var(--size-7);
+  }
+
+  /* The country field and the submit button are one unit: the button never
+     wraps away from the select it belongs to. */
+  .search-form__country {
+    flex: 1 1 12rem;
+    flex-wrap: nowrap;
+  }
+
+  .search-field {
+    display: flex;
+    flex: 1 1 12rem;
+    flex-direction: column;
+    justify-content: center;
+    block-size: var(--control-height);
+    padding-inline: var(--size-4);
+    border: 1px solid var(--card-edge);
+    border-radius: var(--radius-3);
+    background: var(--surface-2);
+  }
+
+  .search-form__country .search-field {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .search-field label {
+    color: var(--ink-2);
+    font-size: var(--font-size-0);
+  }
+
+  .search-field :is(input, select) {
+    inline-size: 100%;
+    border: none;
+    background: transparent;
+    color: var(--ink-1);
+    font-size: var(--font-size-2);
+
+    /* The select is styled to read as a plain field; the value stays alpha-2. */
+    appearance: none;
+    outline: none;
+    text-overflow: ellipsis;
+  }
+}

@@ -1,0 +1,18 @@
+@layer blocks {
+  .spinner {
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    color: var(--accent);
+    animation: spinner-turn 1s linear infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation-duration: 3s;
+    }
+  }
+
+  @keyframes spinner-turn {
+    to {
+      rotate: 360deg;
+    }
+  }
+}

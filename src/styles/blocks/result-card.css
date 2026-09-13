@@ -1,0 +1,58 @@
+@layer blocks {
+  .result-card {
+    --gutter: var(--size-5);
+
+    /* Headroom for the icon that overhangs the top edge. */
+    margin-block-start: var(--size-10);
+    min-block-size: 12rem;
+  }
+
+  .result-card[data-status='pending'],
+  .result-card[data-status='idle'] {
+    display: grid;
+    place-items: center;
+  }
+
+  .condition-icon {
+    position: absolute;
+    inset-block-start: -4.5rem;
+    inset-inline-end: var(--size-5);
+    inline-size: 8rem;
+    block-size: 8rem;
+    color: var(--accent);
+  }
+
+  .result-card__headline {
+    --gutter: var(--size-2);
+  }
+
+  .result-card__temperature {
+    color: var(--accent);
+    font-size: var(--font-size-8);
+    font-weight: var(--font-weight-7);
+    line-height: 1;
+  }
+
+  .result-card__description {
+    color: var(--ink-2);
+    font-size: var(--font-size-2);
+  }
+
+  .result-card__meta {
+    --gutter: var(--size-2) var(--size-5);
+
+    color: var(--ink-2);
+    font-size: var(--font-size-2);
+  }
+
+  .result-card__meta strong {
+    color: var(--ink-1);
+  }
+
+  .result-card__error {
+    --gutter: var(--size-3);
+
+    color: var(--ink-1);
+    font-size: var(--font-size-2);
+  }
+}
