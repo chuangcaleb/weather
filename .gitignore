@@ -4,5 +4,6 @@
 .vercel
 node_modules
 dist
+coverage
 *.tsbuildinfo
 .claude/worktrees
