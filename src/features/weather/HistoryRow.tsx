@@ -15,26 +15,26 @@ export function HistoryRow({ entry, onSearchAgain, onDelete }: Props) {
   const label = `${query.city}, ${query.country}`;
 
   return (
-    <li className="history-row switcher">
+    <li className="history-row">
       <span className="history-row__label">{label}</span>
-      {/* Date and actions travel as one unit, so the row wraps to two lines
-          (label, then everything else) rather than three. */}
-      <span className="history-row__aside cluster">
+      <span className="history-row__aside repel">
         <span className="history-row__time">{formatDateTime(requestedAt)}</span>
-        <IconButton
-          label={`Search ${label} again`}
-          variant="ghost"
-          onClick={() => onSearchAgain(query)}
-        >
-          <SearchIcon />
-        </IconButton>
-        <IconButton
-          label={`Delete ${label}`}
-          variant="ghost"
-          onClick={() => onDelete(query)}
-        >
-          <TrashIcon />
-        </IconButton>
+        <div className="history-row__buttons cluster">
+          <IconButton
+            label={`Search ${label} again`}
+            variant="ghost"
+            onClick={() => onSearchAgain(query)}
+          >
+            <SearchIcon />
+          </IconButton>
+          <IconButton
+            label={`Delete ${label}`}
+            variant="ghost"
+            onClick={() => onDelete(query)}
+          >
+            <TrashIcon />
+          </IconButton>
+        </div>
       </span>
     </li>
   );

@@ -1,21 +1,34 @@
 @layer blocks {
   .history-list__rows {
-    --gutter: var(--size-3);
-
+    --gutter: var(--size-4);
+    container-type: inline-size;
     padding: 0;
     list-style: none;
   }
 
-  /* Wraps as two lines — label above, time and actions below — on flex-basis
-     alone. No breakpoint decides this; the available width does. */
+  /* Wrap point is row width alone, not label length: a container query
+     (not flex-wrap) decides row vs stacked, so every row breaks at the
+     same width regardless of how long its city/country text is. */
   .history-row {
-    --gutter: var(--size-2) var(--size-4);
+    --gutter: var(--size-1);
 
-    padding: var(--size-3) var(--size-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
+    padding: var(--size-2) var(--size-4);
     border: var(--border-size-1) solid var(--card-edge);
     border-radius: var(--radius-2);
     background: var(--surface-3);
-    justify-content: flex-start;
+  }
+
+  @container (min-width: 28rem) {
+    .history-row {
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--size-4);
+    }
   }
 
   .history-row__label {
@@ -30,8 +43,14 @@
   /* Date and buttons travel as one: they never split across the wrap. */
   .history-row__aside {
     --gutter: var(--size-3);
+  }
 
-    flex-wrap: nowrap;
-    justify-content: flex-end;
+  .history-row__buttons {
+    --gutter: var(--size-2);
+  }
+
+  .history-list__cap {
+    color: var(--ink-2);
+    font-size: var(--font-size-0);
   }
 }

@@ -2,6 +2,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { HistoryList } from './HistoryList';
+import { HISTORY_CAP } from './historyReducer';
 import type { HistoryEntry } from './types';
 
 function entry(city: string, country: string, requestedAt: Date): HistoryEntry {
@@ -30,6 +31,30 @@ describe('HistoryList', () => {
 
     expect(screen.getByText('No searches yet.')).toBeInTheDocument();
     expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
+  });
+
+  it('notes the cap only once there is something to show', () => {
+    render(
+      <HistoryList entries={[]} onSearchAgain={vi.fn()} onDelete={vi.fn()} />,
+    );
+
+    expect(
+      screen.queryByText(`Only latest ${HISTORY_CAP} entries are kept.`),
+    ).not.toBeInTheDocument();
+  });
+
+  it('notes the cap once entries exist', () => {
+    render(
+      <HistoryList
+        entries={[lisbon]}
+        onSearchAgain={vi.fn()}
+        onDelete={vi.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByText(`Only latest ${HISTORY_CAP} entries are kept.`),
+    ).toBeInTheDocument();
   });
 
   it('renders one row per entry, in the order given', () => {

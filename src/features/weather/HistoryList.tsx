@@ -1,3 +1,4 @@
+import { HISTORY_CAP } from './historyReducer';
 import { HistoryRow } from './HistoryRow';
 import { normalizeQuery } from './normalizeQuery';
 import type { HistoryEntry, Query } from './types';
@@ -19,16 +20,21 @@ export function HistoryList({ entries, onSearchAgain, onDelete }: Props) {
       {entries.length === 0 ? (
         <p>No searches yet.</p>
       ) : (
-        <ul className="history-list__rows flow">
-          {entries.map((entry) => (
-            <HistoryRow
-              key={normalizeQuery(entry.query)}
-              entry={entry}
-              onSearchAgain={onSearchAgain}
-              onDelete={onDelete}
-            />
-          ))}
-        </ul>
+        <>
+          <ul className="history-list__rows flow">
+            {entries.map((entry) => (
+              <HistoryRow
+                key={normalizeQuery(entry.query)}
+                entry={entry}
+                onSearchAgain={onSearchAgain}
+                onDelete={onDelete}
+              />
+            ))}
+          </ul>
+          <p className="history-list__cap">
+            Only latest {HISTORY_CAP} entries are kept.
+          </p>
+        </>
       )}
     </section>
   );
