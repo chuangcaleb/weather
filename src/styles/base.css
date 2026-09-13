@@ -7,6 +7,7 @@
     --surface-3: hsl(261 45% 89% / 55%);
     --ink-1: hsl(261 45% 14%);
     --ink-2: hsl(261 20% 38%);
+    --ink-error: var(--red-10);
     --accent: hsl(266 60% 42%);
     --card-edge: hsl(0 0% 0% / 20%);
     --page-backdrop: url('/backgrounds/background-light.webp');
@@ -21,6 +22,7 @@
     --surface-3: hsl(261 34% 18% / 55%);
     --ink-1: hsl(261 15% 95%);
     --ink-2: hsl(261 15% 76%);
+    --ink-error: var(--red-4);
     --accent: hsl(266 70% 80%);
     --card-edge: hsl(0 0% 100% / 14%);
     --page-backdrop: url('/backgrounds/background-dark.webp');

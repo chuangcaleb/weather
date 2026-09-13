@@ -54,12 +54,12 @@
     position: absolute;
     inset-block-start: calc(100% + var(--size-1));
     inset-inline-start: var(--size-2);
-    color: var(--red-7);
+    color: var(--ink-error);
     font-size: var(--font-size-0);
   }
 
   .search-field:has(:user-invalid) {
-    border-color: var(--red-7);
+    border-color: var(--ink-error);
   }
 
   .search-field:has(:user-invalid) .search-field__error {
