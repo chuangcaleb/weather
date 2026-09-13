@@ -19,7 +19,6 @@
     inset-inline-end: var(--size-5);
     inline-size: 11rem;
     block-size: 11rem;
-    color: var(--accent);
   }
 
   .result-card__headline {
