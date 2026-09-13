@@ -12,6 +12,9 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    // Git worktrees live under .claude/; their copies of these files are not this
+    // checkout's tests and resolve `@/` against the wrong tree.
+    exclude: ['**/node_modules/**', '**/dist/**', '**/.claude/**'],
     setupFiles: ['./src/vitest.setup.ts'],
     globals: false,
   },

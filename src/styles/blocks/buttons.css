@@ -1,0 +1,57 @@
+@layer blocks {
+  /* One shape everywhere: rounded rectangle in the fields' radius family,
+     never a circle. Only the size changes by context. */
+  .icon-button {
+    display: grid;
+    place-items: center;
+    inline-size: var(--size-8);
+    block-size: var(--size-8);
+    flex: 0 0 auto;
+    border: var(--border-size-2) solid var(--accent);
+    border-radius: var(--radius-3);
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+
+    &[data-variant='solid'] {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--surface-1);
+    }
+
+    &[data-variant='ghost'] {
+      border-color: var(--card-edge);
+      color: var(--ink-2);
+    }
+
+    &[data-size='large'] {
+      inline-size: var(--control-height);
+      block-size: var(--control-height);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 50%;
+    }
+  }
+
+  .icon {
+    inline-size: var(--size-4);
+    block-size: var(--size-4);
+  }
+
+  .icon-button[data-size='large'] .icon {
+    inline-size: var(--size-6);
+    block-size: var(--size-6);
+  }
+
+  /* The inline, text-only counterpart: retry and other in-card actions. */
+  .text-button {
+    padding: var(--size-2) var(--size-3);
+    border: var(--border-size-1) solid var(--accent);
+    border-radius: var(--radius-3);
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+  }
+}

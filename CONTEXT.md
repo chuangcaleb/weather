@@ -21,8 +21,8 @@ The user's submitted search input: `{ city, country }`, country an ISO 3166-1 al
 _Avoid_: search term, search
 
 **Reading**:
-A snapshot of weather conditions at one moment for one place: summary, description, temperature (°C), humidity, plus the place name as echoed back by the API (not the user's raw input casing).
-_Avoid_: result, weather data, conditions
+A snapshot of weather conditions at one moment for one place: summary, temperature (°), high/low temperature (°), humidity, plus the place name as echoed back by the API (not the user's raw input casing).
+_Avoid_: result, weather data, conditions, description
 
 **History entry**:
 One row in the persisted Search History list: `{ query, reading, requestedAt }`. A snapshot tagged by the query that produced it, not a live query that re-runs on its own. Re-searching a query already present overwrites that entry's reading and `requestedAt` in place and moves it to the top of the list — it never creates a duplicate row. A failed search (city not found, network error) never creates or touches a history entry; history only records readings actually obtained.

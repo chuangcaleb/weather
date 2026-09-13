@@ -1,7 +1,7 @@
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
-import { WeatherApiError, fetchWeather } from './weather';
+import { WeatherApiError, WeatherPayloadError, fetchWeather } from './weather';
 
 const server = setupServer();
 
@@ -10,8 +10,8 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 const validUpstreamBody = {
-  weather: [{ main: 'Clouds', description: 'overcast clouds' }],
-  main: { temp: 18.5, humidity: 72 },
+  weather: [{ main: 'Clouds' }],
+  main: { temp: 18.5, temp_max: 21.2, temp_min: 15.9, humidity: 72 },
   name: 'Lisbon',
   sys: { country: 'PT' },
 };
@@ -26,8 +26,9 @@ describe('fetchWeather', () => {
 
     expect(reading).toEqual({
       summary: 'Clouds',
-      description: 'overcast clouds',
       temperatureC: 18.5,
+      highC: 21.2,
+      lowC: 15.9,
       humidity: 72,
       place: 'Lisbon, PT',
     });
@@ -45,13 +46,25 @@ describe('fetchWeather', () => {
     ).rejects.toMatchObject(new WeatherApiError(404));
   });
 
-  it('throws on a shape that fails boundary validation instead of returning garbage', async () => {
+  it('throws WeatherPayloadError on a shape that fails boundary validation', async () => {
     server.use(
       http.get('/api/weather', () => HttpResponse.json({ unexpected: true })),
     );
 
     await expect(
       fetchWeather({ city: 'Lisbon', country: 'PT' }),
-    ).rejects.toThrow();
+    ).rejects.toBeInstanceOf(WeatherPayloadError);
+  });
+
+  it('throws WeatherPayloadError when the conditions array is empty', async () => {
+    server.use(
+      http.get('/api/weather', () =>
+        HttpResponse.json({ ...validUpstreamBody, weather: [] }),
+      ),
+    );
+
+    await expect(
+      fetchWeather({ city: 'Lisbon', country: 'PT' }),
+    ).rejects.toBeInstanceOf(WeatherPayloadError);
   });
 });

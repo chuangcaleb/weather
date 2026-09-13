@@ -1,8 +1,41 @@
 @layer base {
+  /* Semantic tokens: every block reads these, never an Open Props colour
+     directly, so a theme swap is one declaration block rather than a sweep. */
+  :root {
+    --surface-1: hsl(261 45% 97%);
+    --surface-2: hsl(261 50% 93% / 55%);
+    --surface-3: hsl(261 45% 89% / 55%);
+    --ink-1: hsl(261 45% 14%);
+    --ink-2: hsl(261 20% 38%);
+    --ink-error: var(--red-10);
+    --accent: hsl(266 60% 42%);
+    --card-edge: hsl(0 0% 0% / 20%);
+    --page-backdrop: url('/backgrounds/background-light.webp');
+
+    /* Shared control height: every field and every large button lines up on it. */
+    --control-height: 4rem;
+  }
+
+  [data-theme='dark'] {
+    --surface-1: hsl(261 40% 20%);
+    --surface-2: hsl(261 38% 24% / 55%);
+    --surface-3: hsl(261 34% 18% / 55%);
+    --ink-1: hsl(261 15% 95%);
+    --ink-2: hsl(261 15% 76%);
+    --ink-error: var(--red-4);
+    --accent: hsl(266 70% 80%);
+    --card-edge: hsl(0 0% 100% / 14%);
+    --page-backdrop: url('/backgrounds/background-dark.webp');
+  }
+
   html {
     font-family: var(--font-sans);
-    color: var(--gray-9);
-    background-color: var(--gray-0);
+    color: var(--ink-1);
+    background-color: var(--surface-1);
+    background-image: var(--page-backdrop);
+    background-size: cover;
+    background-position: top center;
+    background-repeat: no-repeat;
   }
 
   body {
@@ -10,6 +43,17 @@
   }
 
   a {
-    color: var(--blue-7);
+    color: var(--accent);
+  }
+
+  h1,
+  h2 {
+    font-size: var(--font-size-3);
+    font-weight: var(--font-weight-6);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 }

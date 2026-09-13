@@ -1,0 +1,68 @@
+@layer blocks {
+  .search-form {
+    --gutter: var(--size-3);
+    --switcher-target-width: calc(var(--size-15) * 1.333);
+
+    margin-block-end: var(--size-7);
+  }
+
+  /* The country field and the submit button are one unit: the button never
+     wraps away from the select it belongs to. */
+  .search-form__city {
+    flex-wrap: nowrap;
+  }
+
+  .search-field {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    block-size: var(--control-height);
+    padding-inline: var(--size-4);
+    border: var(--border-size-1) solid var(--card-edge);
+    border-radius: var(--radius-3);
+    background: var(--surface-2);
+  }
+
+  .search-form__city .search-field {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .search-field label {
+    color: var(--ink-2);
+    font-size: var(--font-size-0);
+  }
+
+  .search-field :is(input, select) {
+    inline-size: 100%;
+    border: none;
+    background: transparent;
+    color: var(--ink-1);
+    font-size: var(--font-size-2);
+
+    /* The select is styled to read as a plain field; the value stays alpha-2. */
+    appearance: none;
+    outline: none;
+    text-overflow: ellipsis;
+  }
+
+  /* The field's own message: hidden until the browser judges the field invalid,
+     so `aria-describedby` only describes a field that has something wrong. */
+  .search-field__error {
+    display: none;
+    position: absolute;
+    inset-block-start: calc(100% + var(--size-1));
+    inset-inline-start: var(--size-2);
+    color: var(--ink-error);
+    font-size: var(--font-size-0);
+  }
+
+  .search-field:has(:user-invalid) {
+    border-color: var(--ink-error);
+  }
+
+  .search-field:has(:user-invalid) .search-field__error {
+    display: block;
+  }
+}

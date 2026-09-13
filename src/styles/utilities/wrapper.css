@@ -1,6 +1,6 @@
 @layer utilities {
   .wrapper {
-    max-width: 60rem;
+    max-width: 55rem;
     margin-inline: auto;
     padding-inline: var(--size-3);
   }

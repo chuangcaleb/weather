@@ -3,7 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
     <title>Weather</title>
+    <script>
+      // Blocking on purpose: React mounts after first paint, so the theme has to
+      // be on <html> before any stylesheet is applied or the page flashes the
+      // wrong one. Mirrors resolveTheme() in src/lib/theme.ts.
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem('weather:theme');
+        } catch (error) {
+          // Storage blocked: fall through to the system preference, exactly as
+          // resolveTheme() does, or the two disagree and the page flips.
+        }
+        var theme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

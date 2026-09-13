@@ -1,0 +1,66 @@
+@layer blocks {
+  .result-card {
+    --gutter: var(--size-3);
+
+    /* Headroom for the icon that overhangs the top edge. */
+    margin-block-start: var(--size-fluid-6);
+    min-block-size: 12rem;
+  }
+
+  .result-card[data-status='pending'],
+  .result-card[data-status='idle'] {
+    display: grid;
+    place-items: center;
+  }
+
+  .condition-icon {
+    position: absolute;
+    inset-block-start: calc(var(--size-fluid-6) * -1);
+    inset-inline-end: var(--size-2);
+    --size: var(--size-fluid-8);
+    inline-size: var(--size);
+    block-size: var(--size);
+  }
+
+  .result-card__headline {
+    --gutter: var(--size-2);
+  }
+
+  /* Icon is absolutely positioned (out of flow) but still counts as a DOM
+     sibling, so `.flow`'s `* + *` rule would otherwise push the headline down. */
+  .condition-icon + * {
+    margin-block-start: 0;
+  }
+
+  .result-card__temperature {
+    color: var(--accent);
+    font-size: calc(var(--font-size-8) * 1.75);
+    font-weight: var(--font-weight-7);
+    line-height: 1;
+  }
+
+  .result-card__hilo {
+    color: var(--ink-2);
+    font-size: var(--font-size-2);
+  }
+
+  .result-card__meta {
+    color: var(--ink-2);
+    font-size: var(--font-size-2);
+  }
+
+  .result-card__meta .cluster {
+    --gutter: var(--size-2) var(--size-5);
+  }
+
+  .result-card__meta strong {
+    color: var(--ink-1);
+  }
+
+  .result-card__error {
+    --gutter: var(--size-3);
+
+    color: var(--ink-1);
+    font-size: var(--font-size-2);
+  }
+}

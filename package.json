@@ -2,13 +2,18 @@
   "name": "weather",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@11.24.0",
   "engines": {
     "node": ">=22"
   },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "10.34.5"
+    }
+  },
   "scripts": {
-    "dev": "vercel dev",
-    "dev:ui": "vite",
+    "dev": "vite",
+    "dev:vercel": "vercel dev",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "lint:css": "stylelint \"src/**/*.css\" --allow-empty-input",

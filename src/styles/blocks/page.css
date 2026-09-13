@@ -1,0 +1,11 @@
+@layer blocks {
+  .page-header {
+    padding-block: var(--size-5);
+  }
+
+  .page-main {
+    --gutter: var(--size-5);
+
+    padding-block-end: var(--size-8);
+  }
+}

@@ -5,7 +5,7 @@ OpenWeather's own documentation, plus live requests against `api.openweathermap.
 could be checked without a key.
 
 The app needs one thing from this API: for a single city + country submitted through a two-field
-form, render a summary, a description, a temperature in °C, a humidity percentage, and the datetime
+form, render a summary, a description, a temperature in °, a humidity percentage, and the datetime
 of submission. No forecast, no history, no maps.
 
 ## Sources
@@ -14,29 +14,29 @@ All primary. OpenWeather publishes a Markdown mirror of each documentation page 
 page URL), plus a complete export at `/llms-full.txt`; those mirrors are the same content as the HTML
 pages and are easier to quote exactly.
 
-| Source | URL |
-| --- | --- |
-| API catalogue | <https://openweathermap.org/api> |
-| Current Weather Data | <https://openweathermap.org/api/current> (`/api/current.md`) |
-| Geocoding API | <https://openweathermap.org/api/geocoding-api> (`/api/geocoding-api.md`) |
-| One Call API 4.0 | <https://openweathermap.org/api/one-call-4> |
-| Pricing (detailed) | <https://openweathermap.org/full-price> (`/full-price.md`) |
-| Pricing (overview) | <https://openweathermap.org/price> (`/price.md`) |
-| FAQ | <https://openweathermap.org/faq> (`/faq.md`) |
-| How to start / API keys | <https://openweathermap.org/appid> (`/appid.md`) |
-| Full content export | <https://openweathermap.org/llms-full.txt> |
+| Source                  | URL                                                                      |
+| ----------------------- | ------------------------------------------------------------------------ |
+| API catalogue           | <https://openweathermap.org/api>                                         |
+| Current Weather Data    | <https://openweathermap.org/api/current> (`/api/current.md`)             |
+| Geocoding API           | <https://openweathermap.org/api/geocoding-api> (`/api/geocoding-api.md`) |
+| One Call API 4.0        | <https://openweathermap.org/api/one-call-4>                              |
+| Pricing (detailed)      | <https://openweathermap.org/full-price> (`/full-price.md`)               |
+| Pricing (overview)      | <https://openweathermap.org/price> (`/price.md`)                         |
+| FAQ                     | <https://openweathermap.org/faq> (`/faq.md`)                             |
+| How to start / API keys | <https://openweathermap.org/appid> (`/appid.md`)                         |
+| Full content export     | <https://openweathermap.org/llms-full.txt>                               |
 
 ## 1. Endpoint choice
 
 **Recommendation: Current Weather Data, `GET https://api.openweathermap.org/data/2.5/weather`.**
 
-| | Current Weather Data | One Call API 4.0 |
-| --- | --- | --- |
-| Endpoint | `api.openweathermap.org/data/2.5/weather` | `api.openweathermap.org/data/3.0/onecall` (3.0) / One Call 4.0 product family |
-| Plan | Included in the permanent **Free** plan | Separate **"Pay as you call"** subscription, not part of the Free plan |
-| Payment card | Not required | Required — subscribing means filling in a billing form; 1,000 calls/day are free, calls beyond that bill at 0.0012 GBP each |
-| Accepts a city name | Yes, via the built-in geocoder (`q=`), deprecated but live | No — coordinates only |
-| Returns what this app renders | Yes, in one call | Yes, but bundled with minutely/hourly/daily timelines and alerts the app would discard |
+|                               | Current Weather Data                                       | One Call API 4.0                                                                                                            |
+| ----------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Endpoint                      | `api.openweathermap.org/data/2.5/weather`                  | `api.openweathermap.org/data/3.0/onecall` (3.0) / One Call 4.0 product family                                               |
+| Plan                          | Included in the permanent **Free** plan                    | Separate **"Pay as you call"** subscription, not part of the Free plan                                                      |
+| Payment card                  | Not required                                               | Required — subscribing means filling in a billing form; 1,000 calls/day are free, calls beyond that bill at 0.0012 GBP each |
+| Accepts a city name           | Yes, via the built-in geocoder (`q=`), deprecated but live | No — coordinates only                                                                                                       |
+| Returns what this app renders | Yes, in one call                                           | Yes, but bundled with minutely/hourly/daily timelines and alerts the app would discard                                      |
 
 The pricing page lists Current Weather API as available on every plan including Free, and describes
 the Free plan as "Permanent free access" at 60 calls/minute and 1,000,000 calls/month. One Call is
@@ -95,7 +95,7 @@ Both endpoints say so explicitly:
   comma. Please use ISO 3166 country codes."
 
 There is no documented support for `q=London,United Kingdom`. Nothing in the docs promises a country
-*name* will resolve, and the deprecated status of the built-in geocoder means undocumented leniency
+_name_ will resolve, and the deprecated status of the built-in geocoder means undocumented leniency
 should not be relied on.
 
 Consequences for the form:
@@ -110,7 +110,7 @@ Consequences for the form:
   render the display name from it. That also gives the history-bump rule a clean equality check:
   `city.toLowerCase() + '|' + countryCode`.
 
-City name is *not* constrained to English: "You can specify the parameter not only in English. In
+City name is _not_ constrained to English: "You can specify the parameter not only in English. In
 this case, the API response should be returned in the same language as the language of requested
 location name if the location is in our predefined list of more than 200,000 locations."
 
@@ -154,7 +154,12 @@ Documented response (abridged from the Current Weather Data page; unrelated keys
 {
   "coord": { "lon": -0.13, "lat": 51.51 },
   "weather": [
-    { "id": 300, "main": "Drizzle", "description": "light intensity drizzle", "icon": "09d" }
+    {
+      "id": 300,
+      "main": "Drizzle",
+      "description": "light intensity drizzle",
+      "icon": "09d"
+    }
   ],
   "main": {
     "temp": 280.32,
@@ -174,16 +179,16 @@ Documented response (abridged from the Current Weather Data page; unrelated keys
 
 ### Exact JSON field paths
 
-| Rendered value | JSON path | Type | Documented meaning | Notes |
-| --- | --- | --- | --- | --- |
-| Summary | `weather[0].main` | string | "Group of weather parameters (Rain, Snow, Clouds etc.)" | Short condition group, e.g. `"Drizzle"`. Always English — `lang` does not translate it. |
-| Description | `weather[0].description` | string | "Weather condition within the group" | e.g. `"light intensity drizzle"`. Lowercase as returned; capitalise in CSS, not in data. Translated by `lang`. |
-| Temperature (°C) | `main.temp` | number | "Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit" | Celsius **only** when `units=metric` is sent. Fractional — round at the render boundary. |
-| Humidity (%) | `main.humidity` | number | "Humidity, %" | Integer percentage; unit is fixed, unaffected by `units`. |
-| Observation time | `dt` | number | "Time of data calculation, unix, UTC" | Seconds, not milliseconds: `new Date(dt * 1000)`. |
-| Resolved city name | `name` | string | "City name" | Flagged as part of the deprecated built-in geocoder, but still returned. |
-| Resolved country | `sys.country` | string | "Country code (GB, JP etc.)" | ISO 3166-1 alpha-2, not a name. |
-| Local offset | `timezone` | number | "Shift in seconds from UTC" | Only needed if the observation time is shown in the city's local zone. |
+| Rendered value     | JSON path                | Type   | Documented meaning                                                         | Notes                                                                                                          |
+| ------------------ | ------------------------ | ------ | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Summary            | `weather[0].main`        | string | "Group of weather parameters (Rain, Snow, Clouds etc.)"                    | Short condition group, e.g. `"Drizzle"`. Always English — `lang` does not translate it.                        |
+| Description        | `weather[0].description` | string | "Weather condition within the group"                                       | e.g. `"light intensity drizzle"`. Lowercase as returned; capitalise in CSS, not in data. Translated by `lang`. |
+| Temperature (°)    | `main.temp`              | number | "Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit" | Celsius **only** when `units=metric` is sent. Fractional — round at the render boundary.                       |
+| Humidity (%)       | `main.humidity`          | number | "Humidity, %"                                                              | Integer percentage; unit is fixed, unaffected by `units`.                                                      |
+| Observation time   | `dt`                     | number | "Time of data calculation, unix, UTC"                                      | Seconds, not milliseconds: `new Date(dt * 1000)`.                                                              |
+| Resolved city name | `name`                   | string | "City name"                                                                | Flagged as part of the deprecated built-in geocoder, but still returned.                                       |
+| Resolved country   | `sys.country`            | string | "Country code (GB, JP etc.)"                                               | ISO 3166-1 alpha-2, not a name.                                                                                |
+| Local offset       | `timezone`               | number | "Shift in seconds from UTC"                                                | Only needed if the observation time is shown in the city's local zone.                                         |
 
 `weather` is an array. Every documented example contains exactly one element, and the docs describe
 no case that returns more, but the array is the contract — index `[0]` and treat an empty array as a
@@ -200,13 +205,13 @@ parse defensively at the network boundary rather than trusting the shape.
 `units` is optional and defaults to `standard`, which is **Kelvin**. Omitting it is the single most
 likely way to ship a wrong-by-273 temperature.
 
-| `units` | Temperature unit |
-| --- | --- |
-| `standard` (default) | Kelvin |
-| `metric` | Celsius |
-| `imperial` | Fahrenheit |
+| `units`              | Temperature unit |
+| -------------------- | ---------------- |
+| `standard` (default) | Kelvin           |
+| `metric`             | Celsius          |
+| `imperial`           | Fahrenheit       |
 
-Send `units=metric` on every request. The app renders °C only and has no unit toggle, so this belongs
+Send `units=metric` on every request. The app renders ° only and has no unit toggle, so this belongs
 in the request builder as a constant, not as a caller-supplied argument.
 
 ### Datetime of submission vs `dt`
@@ -235,14 +240,14 @@ Note the type inconsistency: `cod` is the number `200` on success and, in observ
 number as well — but OpenWeather's own error examples elsewhere show it quoted as a string (`"400"`).
 Do not branch on `cod`; branch on the HTTP status.
 
-| HTTP | Cause | Response body | Verified |
-| --- | --- | --- | --- |
-| 200 | Success | Full weather object, `"cod": 200` | Docs |
-| 400 | Missing or malformed mandatory parameter (e.g. no `q`, no `lat`/`lon`) | `{ "cod": "400", "message": "<description>", "parameters": ["lat"] }` — `parameters` lists the offending names | Docs (error-envelope spec) |
-| 401 | Missing key, wrong key, key not yet activated, or key without access to the requested product | `{"cod":401, "message": "Invalid API key. Please see https://openweathermap.org/faq#error401 for more info."}` | **Live**, 2026-09-12 |
-| 404 | Unknown city name / ZIP / city ID, or a malformed request path | `{ "cod": "404", "message": "city not found" }` | Docs describe the cause; exact message string not verifiable without a key |
-| 429 | Free-plan rate limit exceeded — more than 60 calls/minute, or over the monthly quota | `{ "cod": "429", "message": "Too many requests" }` | Docs describe the cause; exact message string not verifiable without a key |
-| 500, 502, 503, 504 | Upstream failure | Unspecified; the FAQ says to contact support | Docs |
+| HTTP               | Cause                                                                                         | Response body                                                                                                  | Verified                                                                   |
+| ------------------ | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| 200                | Success                                                                                       | Full weather object, `"cod": 200`                                                                              | Docs                                                                       |
+| 400                | Missing or malformed mandatory parameter (e.g. no `q`, no `lat`/`lon`)                        | `{ "cod": "400", "message": "<description>", "parameters": ["lat"] }` — `parameters` lists the offending names | Docs (error-envelope spec)                                                 |
+| 401                | Missing key, wrong key, key not yet activated, or key without access to the requested product | `{"cod":401, "message": "Invalid API key. Please see https://openweathermap.org/faq#error401 for more info."}` | **Live**, 2026-09-12                                                       |
+| 404                | Unknown city name / ZIP / city ID, or a malformed request path                                | `{ "cod": "404", "message": "city not found" }`                                                                | Docs describe the cause; exact message string not verifiable without a key |
+| 429                | Free-plan rate limit exceeded — more than 60 calls/minute, or over the monthly quota          | `{ "cod": "429", "message": "Too many requests" }`                                                             | Docs describe the cause; exact message string not verifiable without a key |
+| 500, 502, 503, 504 | Upstream failure                                                                              | Unspecified; the FAQ says to contact support                                                                   | Docs                                                                       |
 
 Behaviour worth designing around, confirmed live: **authentication is checked before the query is
 parsed.** A request with both a bad key and a nonexistent city returns 401, not 404. So a 401 in
@@ -251,14 +256,14 @@ an operator-facing fault rather than something to show the user.
 
 Suggested mapping to rendering boundaries:
 
-| HTTP | Surface to user as | Recoverable by the user? |
-| --- | --- | --- |
-| 404 | "No city matching *X* in *CC*." | Yes — retype |
-| 429 | "Too many searches just now. Try again in a moment." | Yes — wait |
-| 400 | Generic failure; also a bug signal, since the app builds the query | No |
-| 401 | Generic failure; log loudly — configuration fault | No |
-| 5xx | "Weather service is unavailable. Try again shortly." | Yes — retry |
-| Network/timeout | Same as 5xx | Yes — retry |
+| HTTP            | Surface to user as                                                 | Recoverable by the user? |
+| --------------- | ------------------------------------------------------------------ | ------------------------ |
+| 404             | "No city matching _X_ in _CC_."                                    | Yes — retype             |
+| 429             | "Too many searches just now. Try again in a moment."               | Yes — wait               |
+| 400             | Generic failure; also a bug signal, since the app builds the query | No                       |
+| 401             | Generic failure; log loudly — configuration fault                  | No                       |
+| 5xx             | "Weather service is unavailable. Try again shortly."               | Yes — retry              |
+| Network/timeout | Same as 5xx                                                        | Yes — retry              |
 
 The 401 case argues for the serverless-proxy decision under discussion in #1: with the key held
 server-side, a 401 is a deploy-configuration problem visible in server logs, and the browser never

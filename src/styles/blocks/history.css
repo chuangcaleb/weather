@@ -1,0 +1,59 @@
+@layer blocks {
+  .history-list__rows {
+    --gutter: var(--size-4);
+    container-type: inline-size;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Exception to spec (docs/build-spec/04-components.md §8: "no responsive
+     breakpoints anywhere; wrapping is flex-wrap-driven"): wrap point is row
+     width alone, not label length, so a container query decides row vs
+     stacked rather than flex-wrap, and every row breaks at the same width
+     regardless of how long its city/country text is. No flex-wrap/flex-basis
+     equivalent found in time — revisit if one turns up. */
+  .history-row {
+    --gutter: var(--size-1);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
+    padding: var(--size-2) var(--size-4);
+    border: var(--border-size-1) solid var(--card-edge);
+    border-radius: var(--radius-2);
+    background: var(--surface-3);
+  }
+
+  @container (min-width: 28rem) {
+    .history-row {
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--size-4);
+    }
+  }
+
+  .history-row__label {
+    font-size: var(--font-size-2);
+  }
+
+  .history-row__time {
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  /* Date and buttons travel as one: they never split across the wrap. */
+  .history-row__aside {
+    --gutter: var(--size-3);
+  }
+
+  .history-row__buttons {
+    --gutter: var(--size-2);
+  }
+
+  .history-list__cap {
+    color: var(--ink-2);
+    font-size: var(--font-size-0);
+  }
+}
