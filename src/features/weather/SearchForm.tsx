@@ -36,7 +36,7 @@ export function SearchForm({ onSearch }: Props) {
   }
 
   return (
-    <form className="search-form cluster" onSubmit={handleSubmit}>
+    <form className="search-form switcher" onSubmit={handleSubmit}>
       <div className="search-field">
         <label htmlFor="country">Country</label>
         <select

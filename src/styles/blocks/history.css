@@ -19,7 +19,6 @@
   }
 
   .history-row__label {
-    flex: 1 1 var(--size-12);
     font-size: var(--font-size-2);
   }
 
@@ -32,7 +31,6 @@
   .history-row__aside {
     --gutter: var(--size-3);
 
-    flex: 1 1 var(--size-12);
     flex-wrap: nowrap;
     justify-content: flex-end;
   }

@@ -8,7 +8,7 @@
     --ink-1: hsl(261 45% 14%);
     --ink-2: hsl(261 20% 38%);
     --accent: hsl(266 60% 42%);
-    --card-edge: hsl(0 0% 100% / 55%);
+    --card-edge: hsl(0 0% 0% / 20%);
     --page-backdrop: url('/backgrounds/background-light.webp');
 
     /* Shared control height: every field and every large button lines up on it. */

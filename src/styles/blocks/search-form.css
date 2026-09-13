@@ -8,14 +8,12 @@
   /* The country field and the submit button are one unit: the button never
      wraps away from the select it belongs to. */
   .search-form__city {
-    flex: 1 1 12rem;
     flex-wrap: nowrap;
   }
 
   .search-field {
     position: relative;
     display: flex;
-    flex: 1 1 12rem;
     flex-direction: column;
     justify-content: center;
     block-size: var(--control-height);

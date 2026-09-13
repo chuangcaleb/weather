@@ -15,7 +15,7 @@ export function HistoryRow({ entry, onSearchAgain, onDelete }: Props) {
   const label = `${query.city}, ${query.country}`;
 
   return (
-    <li className="history-row cluster">
+    <li className="history-row switcher">
       <span className="history-row__label">{label}</span>
       {/* Date and actions travel as one unit, so the row wraps to two lines
           (label, then everything else) rather than three. */}
